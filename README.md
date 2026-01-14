@@ -101,7 +101,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/HenriqZimer"><img src="https://avatars.githubusercontent.com/u/12345678?v=4?s=100" width="100px;" alt="HenriqZimer"/><br /><sub><b>HenriqZimer</b></sub></a><br /><a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Code">💻</a> <a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Documentation">📖</a> <a href="#maintenance-HenriqZimer" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/HenriqZimer"><img src="https://avatars.githubusercontent.com/u/62187338?v=4" width="100px;" alt="HenriqZimer"/><br /><sub><b>HenriqZimer</b></sub></a><br /><a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Code">💻</a> <a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Documentation">📖</a> <a href="#maintenance-HenriqZimer" title="Maintenance">🚧</a></td>
     </tr>
   </tbody>
 </table>
