@@ -3,6 +3,29 @@ entries:
   romm:
   - apiVersion: v2
     appVersion: 4.5.0
+    created: "2026-01-14T02:17:17.317562174Z"
+    description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
+    digest: 371da30cbcfbe3d220fdc0335bbc2e52823ff8125c1512dd0f4a6386333e60a6
+    home: https://romm.app/
+    icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
+    keywords:
+    - romm
+    - emulation
+    - retrogaming
+    - rom-manager
+    maintainers:
+    - email: henriqzimer@outlook.com
+      name: HenriqZimer
+      url: https://github.com/HenriqZimer
+    name: romm
+    sources:
+    - https://github.com/rommapp/romm
+    type: application
+    urls:
+    - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.0.2/romm-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
+    appVersion: 4.5.0
     created: "2026-01-14T01:58:35.734748215Z"
     description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
     digest: 71ee6ba1cc74c115276352d9c56030304b241192b7d5e82e00e239f47461c1ba
@@ -22,4 +45,4 @@ entries:
     urls:
     - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.0.1/romm-1.0.1.tgz
     version: 1.0.1
-generated: "2026-01-14T01:58:35.734773992Z"
+generated: "2026-01-14T02:17:17.31757576Z"
