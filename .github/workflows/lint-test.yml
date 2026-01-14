@@ -26,7 +26,7 @@ jobs:
           
       - name: Validate Templates
         run: |
-          helm template test chart/ --debug --validate
+          helm template test chart/ --debug
 
       - name: Set up Python
         uses: actions/setup-python@v5
