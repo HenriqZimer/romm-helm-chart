@@ -13,7 +13,24 @@ keywords:
 home: https://romm.app/
 sources:
   - https://github.com/rommapp/romm
+  - https://github.com/HenriqZimer/romm-helm-chart
 maintainers:
   - name: HenriqZimer
     email: henriqzimer@outlook.com
     url: https://github.com/HenriqZimer
+annotations:
+  artifacthub.io/license: MIT
+  artifacthub.io/links: |
+    - name: Chart Source
+      url: https://github.com/HenriqZimer/romm-helm-chart
+    - name: RomM Application
+      url: https://github.com/rommapp/romm
+    - name: Documentation
+      url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
+  artifacthub.io/changes: |
+    - kind: changed
+      description: Translate documentation to English
+    - kind: changed
+      description: Update maintainer email and chart icon
+    - kind: fixed
+      description: Fix repository URLs to use correct case
