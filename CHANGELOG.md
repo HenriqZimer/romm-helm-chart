@@ -7,16 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-01-14
+
+### Changed
+- Translate CHANGELOG to English
+- Update maintainer email to henriqzimer@outlook.com
+- Update chart icon URL to current RomM logo
+- Fix all repository URLs to use correct case (HenriqZimer)
+
+### Removed
+- Remove .all-contributorsrc from version control
+
 ## [1.0.1] - 2026-01-14
 
 ### Fixed
-- Corrigido workflow de lint (removido --validate que requer cluster K8s)
-- Corrigido nome do repositório no cr.yaml
-- Limpeza de arquivos temporários do repositório
+- Fixed lint workflow (removed --validate flag that requires K8s cluster)
+- Fixed repository name in cr.yaml
+- Cleaned up temporary files from repository
 
 ### Changed
-- Workflow de lint agora roda em todos os pushes
-- Adicionado workflow_dispatch para execução manual do release
+- Lint workflow now runs on all pushes to main branch
+- Added workflow_dispatch for manual release execution
 
 ## [1.0.0] - 2026-01-14
 
@@ -54,5 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable configuration via ConfigMap and Secrets
 - Integration with IGDB and SteamGridDB for metadata
 
-[Unreleased]: https://github.com/henriqzimer/romm-helm-chart/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/henriqzimer/romm-helm-chart/releases/tag/v1.0.0
+[Unreleased]: https://github.com/HenriqZimer/romm-helm-chart/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.2
+[1.0.1]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.1
+[1.0.0]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.0

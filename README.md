@@ -86,8 +86,8 @@ The RomM application itself is licensed under its own terms. See the [RomM repos
 
 ## Support
 
-- 🐛 [Report Issues](https://github.com/henriqzimer/romm-helm-chart/issues)
-- 💬 [Discussions](https://github.com/henriqzimer/romm-helm-chart/discussions)
+- 🐛 [Report Issues](https://github.com/HenriqZimer/romm-helm-chart/issues)
+- 💬 [Discussions](https://github.com/HenriqZimer/romm-helm-chart/discussions)
 - 📖 [Documentation](chart/README.md)
 
 ## Contributors

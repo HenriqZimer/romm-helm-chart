@@ -2,9 +2,9 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.0.1
+version: 1.0.2
 appVersion: "4.5.0"
-icon: https://romm.app/images/blocks/logos/romm-light.svg
+icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
   - romm
   - emulation
@@ -15,5 +15,5 @@ sources:
   - https://github.com/rommapp/romm
 maintainers:
   - name: HenriqZimer
-    email: henriqzimer@users.noreply.github.com
+    email: henriqzimer@outlook.com
     url: https://github.com/HenriqZimer

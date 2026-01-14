@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Question or Discussion
-    url: https://github.com/henriqzimer/romm-helm-chart/discussions
+    url: https://github.com/HenriqZimer/romm-helm-chart/discussions
     about: For questions, use GitHub Discussions
   - name: RomM Application Issues
     url: https://github.com/rommapp/romm/issues
