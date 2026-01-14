@@ -7,14 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Initial repository structure
-- Comprehensive documentation
-- CI/CD workflows with GitHub Actions
-- Issue templates for better collaboration
-- Security policy
-- Contributing guidelines
-- Example configurations (minimal and production)
+## [1.0.1] - 2026-01-14
+
+### Fixed
+- Corrigido workflow de lint (removido --validate que requer cluster K8s)
+- Corrigido nome do repositório no cr.yaml
+- Limpeza de arquivos temporários do repositório
+
+### Changed
+- Workflow de lint agora roda em todos os pushes
+- Adicionado workflow_dispatch para execução manual do release
 
 ## [1.0.0] - 2026-01-14
 
