@@ -1,0 +1,279 @@
+# Example values for RomM - Use this as a template for your deployment
+# Copy this file to values-production.yaml and customize it for your environment
+
+# -- Number of RomM replicas to start. Should be left at 1.
+replicaCount: 1
+
+# -- Number of old ReplicaSets to retain for rollback history.
+revisionHistoryLimit: 3
+
+# -- Image pull secrets to authenticate with private repositories.
+imagePullSecrets: []
+
+# -- Override the default name of the chart.
+nameOverride: ""
+# -- Override the default full name of the chart.
+fullnameOverride: ""
+
+# -- Annotations to add to the pod.
+podAnnotations: {}
+# -- Additional labels to add to the pod.
+podLabels: {}
+
+# -- Security context for the pod.
+podSecurityContext: {}
+
+# -- Security context for the container.
+securityContext: {}
+
+# -- Node selector for pod scheduling.
+nodeSelector: {}
+
+# -- Tolerations for pod scheduling.
+tolerations: []
+
+# -- Affinity rules for pod scheduling.
+affinity: {}
+
+# -- Secrets configuration
+# Two modes supported:
+# 1. Internal secrets (enabled: true) - Chart creates secrets from data below
+# 2. External secrets (enabled: false) - Use ExternalSecrets or pre-created secrets
+secrets:
+  # -- Enable internal secret creation. Set to false to use ExternalSecrets or existing secrets.
+  enabled: true
+  # -- Secret name for RomM credentials
+  name: romm-secrets
+  # -- Secret data (only used when enabled: true)
+  # When using ExternalSecrets, set enabled: false and use romm.envFrom to load secrets
+  data:
+    # Database connection (DB_HOST is auto-generated, don't add it here)
+    DB_PORT: "3306"
+    DB_USER: "romm"
+    DB_PASSWD: "SuperSecretDBPassword123!"
+    DB_NAME: "romm"
+    # Database credentials (MariaDB) - MUST match DB_* values above
+    MYSQL_ROOT_PASSWORD: "SuperSecretRootPassword456!"
+    MYSQL_DATABASE: "romm" # Must equal DB_NAME
+    MYSQL_USER: "romm" # Must equal DB_USER
+    MYSQL_PASSWORD: "SuperSecretDBPassword123!" # Must equal DB_PASSWD
+    # RomM authentication - CHANGE THIS!
+    ROMM_AUTH_SECRET_KEY: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+    # API Keys for metadata providers (get them from respective websites)
+    # IGDB (https://api.igdb.com/)
+    IGDB_CLIENT_ID: "your_igdb_client_id_here"
+    IGDB_CLIENT_SECRET: "your_igdb_client_secret_here"
+    # SteamGridDB (https://www.steamgriddb.com/profile/preferences/api)
+    STEAMGRIDDB_API_KEY: "your_steamgriddb_api_key_here"
+    # MobyGames (https://www.mobygames.com/info/api/)
+    MOBYGAMES_API_KEY: "your_mobygames_api_key_here"
+
+# -- RomM application configuration
+romm:
+  # -- Container image configuration
+  image:
+    # -- Container image repository for RomM.
+    repository: docker.io/rommapp/romm
+    # -- RomM container image tag.
+    tag: "4.5.0"
+    # -- Image pull policy (Always, IfNotPresent, or Never).
+    pullPolicy: IfNotPresent
+
+  # -- Resources requests and limits for RomM container.
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  # -- Service configuration
+  service:
+    # -- Service type (ClusterIP, NodePort, or LoadBalancer).
+    type: ClusterIP
+    # -- Port for the RomM service.
+    port: 8080
+    # -- Name of the port in the service.
+    portName: http
+    # -- Annotations for the service.
+    annotations: {}
+    # -- Labels for the service.
+    labels: {}
+
+  # -- Ingress configuration.
+  ingress:
+    enabled: false
+    className: ""
+    annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    hosts:
+      - host: romm.example.com
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      []
+      # - secretName: romm-tls
+      #   hosts:
+      #     - romm.example.com
+
+  # -- Persistence configuration for RomM data
+  persistence:
+    # -- Configuration data (database connection, API keys, etc)
+    config:
+      # -- set to false to use emptyDir
+      enabled: false
+      # -- Type of volume (pvc, hostPath, emptyDir)
+      type: pvc
+      # -- Path on the host node, only used if type is 'hostPath'
+      hostPath: ""
+      # -- PVC specific settings
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      # -- Custom annotations to be added to the PVC
+      annotations: {}
+      # -- If undefined or set to null, no storageClassName spec is set
+      storageClass: ""
+      # -- Use an existing PVC for this mount
+      existingClaim: ""
+
+    # -- ROM library storage
+    library:
+      # -- set to false to use emptyDir
+      enabled: false
+      # -- Type of volume (pvc, hostPath, emptyDir)
+      type: pvc
+      # -- Path on the host node, only used if type is 'hostPath'
+      # Example for NFS mount:
+      # hostPath: "/mnt/nfs/roms"
+      hostPath: ""
+      # -- PVC specific settings
+      accessMode: ReadWriteMany
+      size: 100Gi
+      # -- Custom annotations to be added to the PVC
+      annotations: {}
+      # -- If undefined or set to null, no storageClassName spec is set
+      storageClass: ""
+      # -- Use an existing PVC for this mount
+      existingClaim: ""
+
+    # -- Resources (cover images, screenshots, etc)
+    resources:
+      # -- set to false to use emptyDir
+      enabled: false
+      # -- Type of volume (pvc, hostPath, emptyDir)
+      type: pvc
+      # -- Path on the host node, only used if type is 'hostPath'
+      hostPath: ""
+      # -- PVC specific settings
+      accessMode: ReadWriteOnce
+      size: 10Gi
+      # -- Custom annotations to be added to the PVC
+      annotations: {}
+      # -- If undefined or set to null, no storageClassName spec is set
+      storageClass: ""
+      # -- Use an existing PVC for this mount
+      existingClaim: ""
+
+    # -- Assets (EmulatorJS files, etc)
+    assets:
+      # -- set to false to use emptyDir
+      enabled: false
+      # -- Type of volume (pvc, hostPath, emptyDir)
+      type: pvc
+      # -- Path on the host node, only used if type is 'hostPath'
+      hostPath: ""
+      # -- PVC specific settings
+      accessMode: ReadWriteOnce
+      size: 5Gi
+      # -- Custom annotations to be added to the PVC
+      annotations: {}
+      # -- If undefined or set to null, no storageClassName spec is set
+      storageClass: ""
+      # -- Use an existing PVC for this mount
+      existingClaim: ""
+
+  # -- Additional environment variables for the container.
+  # Example:
+  env: []
+  #   - name: TZ
+  #     value: "America/Sao_Paulo"
+
+  # -- Load environment variables from ConfigMap or Secret.
+  # Example for ExternalSecrets (set secrets.enabled: false):
+  envFrom: []
+  #   - secretRef:
+  #       name: romm-credentials
+  #   - secretRef:
+  #       name: romm-database-credentials
+
+  # -- RomM Configuration File (config.yml)
+  # This ConfigMap creates a config.yml file that will be mounted at /romm/config/config.yml
+  # Documentation: https://docs.romm.app/latest/Getting-Started/Configuration-File/
+  #
+  # To use: enable and paste your complete config.yml in the 'config' field below
+  config:
+    enabled: false # Set to true to use custom configuration
+    name: romm-config-file
+    data:
+      ""
+      # When enabled, paste your complete config.yml content here as a multiline string
+      # Example:
+      # data: |
+      #   # Your config.yml content here
+      #   exclude:
+      #     platforms:
+      #       - "ps"      # PlayStation 1
+      #   filesystem:
+      #     roms_folder: "library"
+      #   scan:
+      #     priority:
+      #       metadata: ["igdb", "moby", "ss"]
+      #   # See full config at: https://docs.romm.app/latest/Getting-Started/Configuration-File/
+
+# -- MariaDB database configuration
+mariadb:
+  # -- Enable MariaDB deployment
+  enabled: true
+
+  # -- Container image configuration
+  image:
+    repository: docker.io/mariadb
+    tag: "11"
+    pullPolicy: IfNotPresent
+
+  # -- Resources requests and limits for MariaDB container
+  resources:
+    requests:
+      cpu: 300m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi
+
+  # -- Service configuration
+  service:
+    type: ClusterIP
+    port: 3306
+
+  # -- Additional environment variables for MariaDB
+  env: []
+
+  # -- Environment variables from secrets/configmaps for MariaDB
+  # This is where database credentials should be loaded from
+  envFrom: []
+    # - secretRef:
+    #     name: romm-database-credentials
+
+  # -- Database persistence
+  persistence:
+    enabled: false
+    type: pvc
+    hostPath: ""
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    annotations: {}
+    storageClass: ""
+    existingClaim: ""
