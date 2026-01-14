@@ -1,6 +1,44 @@
 apiVersion: v1
 entries:
   romm:
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: fixed
+          description: Fixed release workflow to skip existing releases
+        - kind: changed
+          description: Add skip_existing flag to prevent duplicate release errors
+      artifacthub.io/license: MIT
+      artifacthub.io/links: |
+        - name: Chart Source
+          url: https://github.com/HenriqZimer/romm-helm-chart
+        - name: RomM Application
+          url: https://github.com/rommapp/romm
+        - name: Documentation
+          url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
+    apiVersion: v2
+    appVersion: 4.5.0
+    created: "2026-01-14T02:34:37.188568855Z"
+    description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
+    digest: 1a6562bf9813fc0d68b9dcb38e711f4ff5102e5a2a97535436eec4d15e0a7f78
+    home: https://romm.app/
+    icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
+    keywords:
+    - romm
+    - emulation
+    - retrogaming
+    - rom-manager
+    maintainers:
+    - email: henriqzimer@outlook.com
+      name: HenriqZimer
+      url: https://github.com/HenriqZimer
+    name: romm
+    sources:
+    - https://github.com/rommapp/romm
+    - https://github.com/HenriqZimer/romm-helm-chart
+    type: application
+    urls:
+    - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.0.3/romm-1.0.3.tgz
+    version: 1.0.3
   - apiVersion: v2
     appVersion: 4.5.0
     created: "2026-01-14T02:17:17.317562174Z"
@@ -45,4 +83,4 @@ entries:
     urls:
     - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.0.1/romm-1.0.1.tgz
     version: 1.0.1
-generated: "2026-01-14T02:17:17.31757576Z"
+generated: "2026-01-14T02:34:37.188584404Z"
