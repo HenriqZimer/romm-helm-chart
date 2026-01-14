@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Helm Version](https://img.shields.io/badge/Helm-v3-blue)](https://helm.sh)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/romm-helm-chart)](https://artifacthub.io/packages/search?repo=romm-helm-chart)
 
 This repository contains a production-ready Helm chart for deploying [RomM](https://romm.app/) on Kubernetes.
 
