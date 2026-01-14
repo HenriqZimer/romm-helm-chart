@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.0.2
+version: 1.0.3
 appVersion: "4.5.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -28,9 +28,7 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: changed
-      description: Translate documentation to English
-    - kind: changed
-      description: Update maintainer email and chart icon
     - kind: fixed
-      description: Fix repository URLs to use correct case
+      description: Fixed release workflow to skip existing releases
+    - kind: changed
+      description: Add skip_existing flag to prevent duplicate release errors

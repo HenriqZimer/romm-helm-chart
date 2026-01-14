@@ -23,7 +23,7 @@ jobs:
       - name: Run Helm Lint
         run: |
           helm lint chart/ --strict
-          
+
       - name: Validate Templates
         run: |
           helm template test chart/ --debug

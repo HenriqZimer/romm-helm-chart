@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.3] - 2026-01-14
+
+### Fixed
+- Fixed release workflow to skip existing releases
+- Prevent duplicate release errors on re-runs
+
+### Changed
+- Add skip_existing flag to chart-releaser workflow
+- Update artifacthub-repo.yaml with proper documentation header
+
 ## [1.0.2] - 2026-01-14
 
 ### Changed
@@ -65,7 +75,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variable configuration via ConfigMap and Secrets
 - Integration with IGDB and SteamGridDB for metadata
 
-[Unreleased]: https://github.com/HenriqZimer/romm-helm-chart/compare/v1.0.2...HEAD
+[Unreleased]: https://github.com/HenriqZimer/romm-helm-chart/compare/v1.0.3...HEAD
+[1.0.3]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.3
 [1.0.2]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.2
 [1.0.1]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.1
 [1.0.0]: https://github.com/HenriqZimer/romm-helm-chart/releases/tag/v1.0.0
