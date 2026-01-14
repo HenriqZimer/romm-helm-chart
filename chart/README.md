@@ -1,6 +1,6 @@
 # RomM Helm Chart
 
-[![Version: 1.0.3](https://img.shields.io/badge/Version-1.0.3-informational?style=flat-square)](https://github.com/henriqzimer/k8s/tree/main/helm-applications/romm)
+[![Version: 1.0.4](https://img.shields.io/badge/Version-1.0.4-informational?style=flat-square)](https://github.com/henriqzimer/k8s/tree/main/helm-applications/romm)
 [![AppVersion: 4.5.0](https://img.shields.io/badge/AppVersion-4.5.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
