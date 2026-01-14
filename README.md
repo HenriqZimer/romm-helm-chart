@@ -69,7 +69,6 @@ This Helm chart provides:
 - ✅ Built-in MariaDB support (optional)
 - ✅ Persistent volume management
 - ✅ Ingress configuration with TLS support
-- ✅ Horizontal Pod Autoscaling (HPA)
 - ✅ Resource limits and requests
 - ✅ Health checks and probes
 - ✅ ConfigMap and Secret management

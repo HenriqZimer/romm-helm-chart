@@ -34,3 +34,8 @@ chart/charts/*.tgz
 # Build artifacts
 dist/
 build/
+output.yaml
+
+# Chart releaser
+.cr-release-packages/
+.cr-index/
