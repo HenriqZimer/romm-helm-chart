@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.0.3
+version: 1.0.4
 appVersion: "4.5.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -16,19 +16,62 @@ sources:
   - https://github.com/HenriqZimer/romm-helm-chart
 maintainers:
   - name: HenriqZimer
-    email: henriqzimer@outlook.com
-    url: https://github.com/HenriqZimer
+    email: henrique.zimermann@outlook.com
+    url: https://henriqzimer.com.br
 annotations:
   artifacthub.io/license: MIT
   artifacthub.io/links: |
+    - name: Helm Repository
+      url: https://henriqzimer.github.io/romm-helm-chart/
     - name: Chart Source
       url: https://github.com/HenriqZimer/romm-helm-chart
+    - name: Maintainer Website
+      url: https://henriqzimer.com.br
+    - name: GitHub Profile
+      url: https://github.com/HenriqZimer
     - name: RomM Application
       url: https://github.com/rommapp/romm
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: fixed
-      description: Fixed release workflow to skip existing releases
     - kind: changed
-      description: Add skip_existing flag to prevent duplicate release errors
+      description: Add complete maintainer information with personal website
+    - kind: changed
+      description: Add Helm repository and maintainer links to Artifact Hub
+    - kind: fixed
+      description: Update maintainer email to henrique.zimermann@outlook.com
+  artifacthub.io/changesHistory: |
+    - version: 1.0.3
+      changes:
+        - kind: fixed
+          description: Fixed release workflow to skip existing releases
+        - kind: changed
+          description: Add skip_existing flag to prevent duplicate release errors
+    - version: 1.0.2
+      changes:
+        - kind: changed
+          description: Translate CHANGELOG to English
+        - kind: changed
+          description: Update maintainer email to henriqzimer@outlook.com
+        - kind: changed
+          description: Update chart icon URL to current RomM logo
+        - kind: fixed
+          description: Fix all repository URLs to use correct case (HenriqZimer)
+    - version: 1.0.1
+      changes:
+        - kind: fixed
+          description: Fixed lint workflow (removed --validate flag that requires K8s cluster)
+        - kind: fixed
+          description: Fixed repository name in cr.yaml
+        - kind: changed
+          description: Lint workflow now runs on all pushes to main branch
+        - kind: changed
+          description: Added workflow_dispatch for manual release execution
+    - version: 1.0.0
+      changes:
+        - kind: added
+          description: Initial release of RomM Helm Chart
+        - kind: added
+          description: Support for RomM application version 4.5.0
+        - kind: added
+          description: Full deployment configuration with Deployment, Service, Ingress

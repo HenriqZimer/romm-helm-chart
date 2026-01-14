@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.4] - 2026-01-14
+
+### Changed
+- Add complete maintainer information with personal website (https://henriqzimer.com.br)
+- Add Helm repository link to Artifact Hub (https://henriqzimer.github.io/romm-helm-chart/)
+- Add maintainer GitHub profile and website to Artifact Hub links
+- Add complete changelog history for all versions (1.0.0 - 1.0.3) to Artifact Hub
+
+### Fixed
+- Update maintainer email to henrique.zimermann@outlook.com
+
 ## [1.0.3] - 2026-01-14
 
 ### Fixed
