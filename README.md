@@ -21,7 +21,7 @@ RomM (Rom Manager) is a beautiful, powerful, self-hosted ROM manager for your re
 ### Add Helm Repository
 
 ```bash
-helm repo add henriqzimer https://henriqzimer.github.io/helm-applications
+helm repo add henriqzimer https://henriqzimer.github.io/romm-helm-chart/
 helm repo update
 ```
 
@@ -90,9 +90,27 @@ The RomM application itself is licensed under its own terms. See the [RomM repos
 - 💬 [Discussions](https://github.com/henriqzimer/romm-helm-chart/discussions)
 - 📖 [Documentation](chart/README.md)
 
-## Maintainer
+## Contributors
 
-- **henriqzimer**
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/HenriqZimer"><img src="https://avatars.githubusercontent.com/u/12345678?v=4?s=100" width="100px;" alt="HenriqZimer"/><br /><sub><b>HenriqZimer</b></sub></a><br /><a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Code">💻</a> <a href="https://github.com/HenriqZimer/romm-helm-chart/commits?author=HenriqZimer" title="Documentation">📖</a> <a href="#maintenance-HenriqZimer" title="Maintenance">🚧</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ---
 

@@ -39,3 +39,6 @@ output.yaml
 # Chart releaser
 .cr-release-packages/
 .cr-index/
+
+# All Contributors
+.all-contributorsrc
