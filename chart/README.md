@@ -31,11 +31,11 @@ helm install romm romm/romm
 
 ```bash
 # Add the repository
-helm repo add henriqzimer https://henriqzimer.github.io/helm-applications
+helm repo add romm https://henriqzimer.github.io/helm-applications
 helm repo update
 
 # Install RomM
-helm install romm henriqzimer/romm
+helm install romm romm/romm
 ```
 
 ### From Source
