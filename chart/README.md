@@ -9,11 +9,11 @@ A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted RO
 
 ```bash
 # Add the Helm repository
-helm repo add henriqzimer https://henriqzimer.github.io/helm-applications
+helm repo add romm https://henriqzimer.github.io/helm-applications
 helm repo update
 
 # Install RomM
-helm install romm henriqzimer/romm
+helm install romm romm/romm
 ```
 
 ## Prerequisites
