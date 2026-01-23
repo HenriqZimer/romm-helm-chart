@@ -52,11 +52,8 @@ secrets:
     DB_USER: "romm"
     DB_PASSWD: "SuperSecretDBPassword123!"
     DB_NAME: "romm"
-    # Database credentials (MariaDB) - MUST match DB_* values above
+    # Database credentials (MariaDB)
     MYSQL_ROOT_PASSWORD: "SuperSecretRootPassword456!"
-    MYSQL_DATABASE: "romm" # Must equal DB_NAME
-    MYSQL_USER: "romm" # Must equal DB_USER
-    MYSQL_PASSWORD: "SuperSecretDBPassword123!" # Must equal DB_PASSWD
     # RomM authentication - CHANGE THIS!
     ROMM_AUTH_SECRET_KEY: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
     # API Keys for metadata providers (get them from respective websites)

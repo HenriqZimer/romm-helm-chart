@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2026-01-23
+
+### Changed
+- Optimize secrets configuration by auto-generating MariaDB credentials from DB_* values
+- Removed duplicate MYSQL_USER, MYSQL_PASSWORD, and MYSQL_DATABASE from values.yaml
+- Chart now automatically creates MYSQL_* environment variables from DB_USER, DB_PASSWD, and DB_NAME
+- Reduced required secrets configuration from 7 to 4 variables
+
+### Improved
+- Simplified secrets management with automatic credential mapping
+- Eliminated risk of inconsistencies between DB_* and MYSQL_* values
+
 ## [1.0.4] - 2026-01-14
 
 ### Changed
