@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-05
+
+### Added
+- Liveness, readiness and startup probes for the RomM container (TCP check on port 8080 by default, since RomM has no dedicated `/health` endpoint)
+- `NOTES.txt` shown after install/upgrade with access instructions, warnings for non-persistent storage, and a reminder to change default credentials
+- Configurable `serviceAccount` (create/name/annotations)
+- `checksum/secret` and `checksum/configmap` pod annotations so `helm upgrade` rolls pods when secrets or the config ConfigMap change
+
+### Changed
+- **Breaking (defaults only):** persistence is now enabled by default for `romm.persistence.{config,library,resources,assets}` and `mariadb.persistence` — previously these defaulted to `emptyDir`, which silently lost all data (including the database) on every pod restart. Existing installs that already set these values explicitly are unaffected; fresh installs now require a default `StorageClass` to be available, or `storageClass`/`existingClaim` to be set explicitly.
+- Container `securityContext` now defaults to `allowPrivilegeEscalation: false` and drops all Linux capabilities
+- Default secret placeholder values (`DB_PASSWD`, `MYSQL_ROOT_PASSWORD`, `ROMM_AUTH_SECRET_KEY`) renamed to make it obvious they are unsafe defaults that must be overridden before any non-local deployment
+
+### Fixed
+- CI lint workflow (`lint-test.yml`) no longer swallows `chart-testing` failures via `continue-on-error`
+
 ## [1.0.5] - 2026-01-23
 
 ### Changed

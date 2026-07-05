@@ -1,6 +1,6 @@
 # RomM Helm Chart
 
-[![Version: 1.0.4](https://img.shields.io/badge/Version-1.0.4-informational?style=flat-square)](https://github.com/henriqzimer/k8s/tree/main/helm-applications/romm)
+[![Version: 1.1.0](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
 [![AppVersion: 4.5.0](https://img.shields.io/badge/AppVersion-4.5.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
@@ -9,7 +9,7 @@ A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted RO
 
 ```bash
 # Add the Helm repository
-helm repo add romm https://henriqzimer.github.io/helm-applications
+helm repo add romm https://henriqzimer.github.io/romm-helm-chart
 helm repo update
 
 # Install RomM
@@ -21,7 +21,7 @@ helm install romm romm/romm
 - Kubernetes 1.19+
 - Helm 3.0+
 - A running MariaDB/MySQL database (or use the included MariaDB chart)
-- Persistent storage for ROMs, config, and assets
+- A default `StorageClass` available in the cluster (persistence is enabled by default), or your own `storageClass`/`existingClaim` values
 - Ingress controller (nginx-ingress recommended)
 - cert-manager (optional, for automatic TLS certificates)
 
@@ -31,7 +31,7 @@ helm install romm romm/romm
 
 ```bash
 # Add the repository
-helm repo add romm https://henriqzimer.github.io/helm-applications
+helm repo add romm https://henriqzimer.github.io/romm-helm-chart
 helm repo update
 
 # Install RomM
@@ -42,14 +42,14 @@ helm install romm romm/romm
 
 ```bash
 # Clone the repository
-git clone https://github.com/henriqzimer/k8s.git
-cd k8s/helm-applications
+git clone https://github.com/HenriqZimer/romm-helm-chart.git
+cd romm-helm-chart
 
 # Package the chart
-helm package romm/
+helm package chart/
 
 # Install from local package
-helm install romm ./romm-1.0.0.tgz
+helm install romm ./romm-1.1.0.tgz
 ```
 
 ## Configuration
@@ -188,7 +188,11 @@ secrets:
 
 ### Storage Configuration
 
-RomM requires several persistent volumes:
+RomM requires several persistent volumes. **Persistence is enabled by default** (since v1.1.0) for
+`romm.persistence.{config,library,resources,assets}` and `mariadb.persistence`, using a PVC with your
+cluster's default `StorageClass`. Set `storageClass` explicitly if you don't want the default one, or
+set the relevant `*.enabled: false` to fall back to `emptyDir` (not recommended outside of quick local
+testing, since all data — including the database — is lost on every pod restart).
 
 ```yaml
 romm:
@@ -279,8 +283,14 @@ RomM integrates with several external services. Get API keys from:
 | `romm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `romm.service.type` | Service type | `ClusterIP` |
 | `romm.service.port` | Service port | `8080` |
-| `romm.ingress.enabled` | Enable ingress | `true` |
-| `romm.ingress.className` | Ingress class name | `nginx` |
+| `romm.ingress.enabled` | Enable ingress | `false` |
+| `romm.ingress.className` | Ingress class name | `""` |
+| `romm.livenessProbe` | Liveness probe (TCP check on port 8080 by default) | see `values.yaml` |
+| `romm.readinessProbe` | Readiness probe (TCP check on port 8080 by default) | see `values.yaml` |
+| `romm.startupProbe` | Startup probe | `{}` (disabled) |
+| `serviceAccount.create` | Create a dedicated ServiceAccount | `false` |
+| `serviceAccount.name` | ServiceAccount name (auto-generated when empty and `create: true`) | `""` |
+| `securityContext` | Container securityContext | drops all capabilities, no privilege escalation |
 
 ### Database Parameters
 
@@ -292,7 +302,7 @@ RomM integrates with several external services. Get API keys from:
 | `mariadb.image.tag` | MariaDB image tag | `11` |
 | `mariadb.service.type` | MariaDB service type | `ClusterIP` |
 | `mariadb.service.port` | MariaDB service port | `3306` |
-| `mariadb.persistence.enabled` | Enable MariaDB persistence | `false` |
+| `mariadb.persistence.enabled` | Enable MariaDB persistence | `true` |
 | `mariadb.persistence.size` | MariaDB PVC size | `10Gi` |
 
 ### Persistence Parameters

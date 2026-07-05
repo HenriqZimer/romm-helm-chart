@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.0.7
+version: 1.1.0
 appVersion: "4.5.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -35,14 +35,32 @@ annotations:
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
     - kind: added
-      description: Add support for external MariaDB/MySQL databases
+      description: Add liveness, readiness and startup probes for the RomM container
+    - kind: added
+      description: Add NOTES.txt with access instructions and warnings for non-persistent storage or default credentials
+    - kind: added
+      description: Add configurable ServiceAccount (serviceAccount.create/name/annotations)
+    - kind: added
+      description: Add checksum/secret and checksum/configmap pod annotations so upgrades roll pods when secrets or config change
     - kind: changed
-      description: DB_HOST is now dynamically generated based on mariadb.enabled setting
+      description: Enable persistence by default for RomM config/library/resources/assets and MariaDB data (previously emptyDir, causing data loss on pod restart)
+    - kind: changed
+      description: Add a safe-by-default container securityContext (allowPrivilegeEscalation false, drop all capabilities)
+    - kind: changed
+      description: Rename default secret placeholder values to make it obvious they must be changed before production use
     - kind: fixed
-      description: Fix duplicate DB_PORT environment variable error
-    - kind: changed
-      description: Simplify external database configuration (only host needed in externalDatabase)
+      description: CI lint workflow no longer swallows chart-testing failures with continue-on-error
   artifacthub.io/changesHistory: |
+    - version: 1.0.7
+      changes:
+        - kind: added
+          description: Add support for external MariaDB/MySQL databases
+        - kind: changed
+          description: DB_HOST is now dynamically generated based on mariadb.enabled setting
+        - kind: fixed
+          description: Fix duplicate DB_PORT environment variable error
+        - kind: changed
+          description: Simplify external database configuration (only host needed in externalDatabase)
     - version: 1.0.5
       changes:
         - kind: changed

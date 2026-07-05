@@ -1,0 +1,55 @@
+RomM has been deployed!
+
+1. Get the application URL:
+{{- if .Values.romm.ingress.enabled }}
+{{- range $host := .Values.romm.ingress.hosts }}
+  {{- range .paths }}
+  http{{ if $.Values.romm.ingress.tls }}s{{ end }}://{{ $host.host }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else if contains "NodePort" .Values.romm.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "romm.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.romm.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "romm.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.romm.service.port }}
+{{- else if contains "ClusterIP" .Values.romm.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/instance={{ .Release.Name }},app.kubernetes.io/component=romm" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:{{ .Values.romm.service.port }}
+  echo http://localhost:8080
+{{- end }}
+
+{{- $warnings := list }}
+{{- if not .Values.romm.persistence.library.enabled }}
+{{- $warnings = append $warnings "  - romm.persistence.library is DISABLED: your ROM library is stored in an emptyDir and will be LOST on pod restart." }}
+{{- end }}
+{{- if not .Values.romm.persistence.config.enabled }}
+{{- $warnings = append $warnings "  - romm.persistence.config is DISABLED: configuration data will be LOST on pod restart." }}
+{{- end }}
+{{- if not .Values.romm.persistence.resources.enabled }}
+{{- $warnings = append $warnings "  - romm.persistence.resources is DISABLED: covers/screenshots will be LOST on pod restart." }}
+{{- end }}
+{{- if and .Values.mariadb.enabled (not .Values.mariadb.persistence.enabled) }}
+{{- $warnings = append $warnings "  - mariadb.persistence is DISABLED: your DATABASE will be LOST on pod restart." }}
+{{- end }}
+{{- if $warnings }}
+
+2. WARNING - Non-persistent storage detected:
+{{ range $warnings }}{{ . }}
+{{ end -}}
+   Set the corresponding *.persistence.enabled to true (and configure a storageClass) before using this in production.
+{{- end }}
+
+{{- if .Values.secrets.enabled }}
+
+3. SECURITY: This release was installed using the default credentials shipped in values.yaml
+   (DB_PASSWD, MYSQL_ROOT_PASSWORD, ROMM_AUTH_SECRET_KEY, etc).
+   Change every value under `secrets.data` before exposing this deployment beyond local testing:
+
+     helm upgrade {{ .Release.Name }} <chart> --set secrets.data.ROMM_AUTH_SECRET_KEY=<your-own-random-secret> ...
+
+   Or provide your own via --set-file/-f values-production.yaml, or disable `secrets.enabled`
+   and reference pre-created/ExternalSecrets secrets via `romm.envFrom`.
+{{- end }}

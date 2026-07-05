@@ -47,3 +47,14 @@ Selector labels
 app.kubernetes.io/name: {{ include "romm.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{/*
+Name of the ServiceAccount to use
+*/}}
+{{- define "romm.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "romm.fullname" .) .Values.serviceAccount.name }}
+{{- else }}
+{{- default "default" .Values.serviceAccount.name }}
+{{- end }}
+{{- end }}

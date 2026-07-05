@@ -32,19 +32,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        continue-on-error: true
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.1
-        continue-on-error: true
 
       - name: Run chart-testing (lint)
         run: |
           ct lint --config ct.yaml \
             --target-branch ${{ github.event.repository.default_branch }} \
             --chart-dirs . \
-            --charts chart/ || echo "ct lint failed but continuing..."
-        continue-on-error: true
+            --charts chart/
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.9.0

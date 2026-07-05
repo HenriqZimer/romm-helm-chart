@@ -24,7 +24,21 @@ podLabels: {}
 podSecurityContext: {}
 
 # -- Security context for the container.
-securityContext: {}
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -- ServiceAccount configuration.
+serviceAccount:
+  # -- Specifies whether a ServiceAccount should be created.
+  create: false
+  # -- Annotations to add to the ServiceAccount.
+  annotations: {}
+  # -- Name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template.
+  # If create is false, defaults to "default".
+  name: ""
 
 # -- Node selector for pod scheduling.
 nodeSelector: {}
@@ -46,16 +60,23 @@ secrets:
   name: romm-secrets
   # -- Secret data (only used when enabled: true)
   # When using ExternalSecrets, set enabled: false and use romm.envFrom to load secrets
+  #
+  # SECURITY WARNING: every value below is a well-known placeholder published in this
+  # chart's public source code. It is safe ONLY for local/throwaway testing.
+  # ALWAYS override these (e.g. via -f values-production.yaml or --set) before deploying
+  # anywhere reachable outside your workstation. ROMM_AUTH_SECRET_KEY in particular signs
+  # auth tokens: leaving the default allows anyone to forge a valid session.
   data:
     # Database connection (DB_HOST is auto-generated based on mariadb settings)
     DB_PORT: "3306"
     DB_USER: "romm"
-    DB_PASSWD: "SuperSecretDBPassword123!"
+    DB_PASSWD: "CHANGEME-SuperSecretDBPassword123!"
     DB_NAME: "romm"
     # Database credentials (MariaDB) - only used when mariadb.enabled: true
-    MYSQL_ROOT_PASSWORD: "SuperSecretRootPassword456!"
-    # RomM authentication - CHANGE THIS!
-    ROMM_AUTH_SECRET_KEY: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6"
+    MYSQL_ROOT_PASSWORD: "CHANGEME-SuperSecretRootPassword456!"
+    # RomM authentication - MUST be changed to a unique random value, e.g.:
+    #   openssl rand -hex 32
+    ROMM_AUTH_SECRET_KEY: "CHANGEME-generate-your-own-with-openssl-rand-hex-32"
     # API Keys for metadata providers (get them from respective websites)
     # IGDB (https://api.igdb.com/)
     IGDB_CLIENT_ID: "your_igdb_client_id_here"
@@ -84,6 +105,28 @@ romm:
     limits:
       cpu: 1000m
       memory: 2Gi
+
+  # -- Liveness probe configuration. RomM has no dedicated /health endpoint,
+  # so a TCP check against the app port is used by default.
+  livenessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Readiness probe configuration.
+  readinessProbe:
+    tcpSocket:
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+
+  # -- Startup probe configuration. Set to {} to disable.
+  startupProbe: {}
 
   # -- Service configuration
   service:
@@ -120,8 +163,8 @@ romm:
   persistence:
     # -- Configuration data (database connection, API keys, etc)
     config:
-      # -- set to false to use emptyDir
-      enabled: false
+      # -- set to false to use emptyDir (NOT recommended: config is lost on pod restart)
+      enabled: true
       # -- Type of volume (pvc, hostPath, emptyDir)
       type: pvc
       # -- Path on the host node, only used if type is 'hostPath'
@@ -138,8 +181,8 @@ romm:
 
     # -- ROM library storage
     library:
-      # -- set to false to use emptyDir
-      enabled: false
+      # -- set to false to use emptyDir (NOT recommended: your ROM library is lost on pod restart)
+      enabled: true
       # -- Type of volume (pvc, hostPath, emptyDir)
       type: pvc
       # -- Path on the host node, only used if type is 'hostPath'
@@ -158,8 +201,8 @@ romm:
 
     # -- Resources (cover images, screenshots, etc)
     resources:
-      # -- set to false to use emptyDir
-      enabled: false
+      # -- set to false to use emptyDir (NOT recommended: covers/screenshots are lost on pod restart)
+      enabled: true
       # -- Type of volume (pvc, hostPath, emptyDir)
       type: pvc
       # -- Path on the host node, only used if type is 'hostPath'
@@ -176,8 +219,8 @@ romm:
 
     # -- Assets (EmulatorJS files, etc)
     assets:
-      # -- set to false to use emptyDir
-      enabled: false
+      # -- set to false to use emptyDir (NOT recommended: EmulatorJS assets are lost on pod restart)
+      enabled: true
       # -- Type of volume (pvc, hostPath, emptyDir)
       type: pvc
       # -- Path on the host node, only used if type is 'hostPath'
@@ -282,7 +325,8 @@ mariadb:
 
   # -- Database persistence
   persistence:
-    enabled: false
+    # -- set to false to use emptyDir (NOT recommended: your DATABASE is lost on pod restart)
+    enabled: true
     type: pvc
     hostPath: ""
     accessMode: ReadWriteOnce
