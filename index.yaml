@@ -88,6 +88,115 @@ entries:
           url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
     apiVersion: v2
     appVersion: 4.5.0
+    created: "2026-07-05T20:01:18.06178315Z"
+    description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
+    digest: 34bdc8f5d9b03d1d324b1aba56ee4b0841828e0d9e98ac6a02bd83f9add9ed7d
+    home: https://romm.app/
+    icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
+    keywords:
+    - romm
+    - emulation
+    - retrogaming
+    - rom-manager
+    maintainers:
+    - email: henrique.zimermann@outlook.com
+      name: HenriqZimer
+      url: https://henriqzimer.com.br
+    name: romm
+    sources:
+    - https://github.com/rommapp/romm
+    - https://github.com/HenriqZimer/romm-helm-chart
+    type: application
+    urls:
+    - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.2.0/romm-1.2.0.tgz
+    version: 1.2.0
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: Add liveness, readiness and startup probes for the RomM container
+        - kind: added
+          description: Add NOTES.txt with access instructions and warnings for non-persistent storage or default credentials
+        - kind: added
+          description: Add configurable ServiceAccount (serviceAccount.create/name/annotations)
+        - kind: added
+          description: Add checksum/secret and checksum/configmap pod annotations so upgrades roll pods when secrets or config change
+        - kind: changed
+          description: Enable persistence by default for RomM config/library/resources/assets and MariaDB data (previously emptyDir, causing data loss on pod restart)
+        - kind: changed
+          description: Add a safe-by-default container securityContext (allowPrivilegeEscalation false, drop all capabilities)
+        - kind: changed
+          description: Rename default secret placeholder values to make it obvious they must be changed before production use
+        - kind: fixed
+          description: CI lint workflow no longer swallows chart-testing failures with continue-on-error
+      artifacthub.io/changesHistory: |
+        - version: 1.0.7
+          changes:
+            - kind: added
+              description: Add support for external MariaDB/MySQL databases
+            - kind: changed
+              description: DB_HOST is now dynamically generated based on mariadb.enabled setting
+            - kind: fixed
+              description: Fix duplicate DB_PORT environment variable error
+            - kind: changed
+              description: Simplify external database configuration (only host needed in externalDatabase)
+        - version: 1.0.5
+          changes:
+            - kind: changed
+              description: Add complete maintainer information with personal website
+            - kind: changed
+              description: Add Helm repository and maintainer links to Artifact Hub
+            - kind: fixed
+              description: Update maintainer email to henrique.zimermann@outlook.com
+        - version: 1.0.3
+          changes:
+            - kind: fixed
+              description: Fixed release workflow to skip existing releases
+            - kind: changed
+              description: Add skip_existing flag to prevent duplicate release errors
+        - version: 1.0.2
+          changes:
+            - kind: changed
+              description: Translate CHANGELOG to English
+            - kind: changed
+              description: Update maintainer email to henriqzimer@outlook.com
+            - kind: changed
+              description: Update chart icon URL to current RomM logo
+            - kind: fixed
+              description: Fix all repository URLs to use correct case (HenriqZimer)
+        - version: 1.0.1
+          changes:
+            - kind: fixed
+              description: Fixed lint workflow (removed --validate flag that requires K8s cluster)
+            - kind: fixed
+              description: Fixed repository name in cr.yaml
+            - kind: changed
+              description: Lint workflow now runs on all pushes to main branch
+            - kind: changed
+              description: Added workflow_dispatch for manual release execution
+        - version: 1.0.0
+          changes:
+            - kind: added
+              description: Initial release of RomM Helm Chart
+            - kind: added
+              description: Support for RomM application version 4.5.0
+            - kind: added
+              description: Full deployment configuration with Deployment, Service, Ingress
+      artifacthub.io/license: MIT
+      artifacthub.io/links: |
+        - name: Helm Repository
+          url: https://henriqzimer.github.io/romm-helm-chart/
+        - name: Chart Source
+          url: https://github.com/HenriqZimer/romm-helm-chart
+        - name: Maintainer Website
+          url: https://henriqzimer.com.br
+        - name: GitHub Profile
+          url: https://github.com/HenriqZimer
+        - name: RomM Application
+          url: https://github.com/rommapp/romm
+        - name: Documentation
+          url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
+    apiVersion: v2
+    appVersion: 4.5.0
     created: "2026-07-05T19:31:08.452873534Z"
     description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
     digest: 6e2642acdbd7446cde61d9965b755eca2eaa6c1af9bc8725d34b063f4b601102
@@ -526,4 +635,4 @@ entries:
     urls:
     - https://github.com/HenriqZimer/romm-helm-chart/releases/download/romm-1.0.1/romm-1.0.1.tgz
     version: 1.0.1
-generated: "2026-07-05T19:31:08.452906696Z"
+generated: "2026-07-05T20:01:18.06182189Z"
