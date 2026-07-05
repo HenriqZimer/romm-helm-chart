@@ -56,8 +56,13 @@ helm install romm-test chart/ --dry-run --debug
 ### Chart Versioning
 
 - Follow [Semantic Versioning](https://semver.org/)
-- Update `version` in `Chart.yaml` for chart changes
-- Update `appVersion` in `Chart.yaml` when updating RomM version
+- Do **not** manually bump `version` in `Chart.yaml` in your PR — releases are driven by git tags.
+  To cut a release: merge to `main`, then create and push a tag matching `vX.Y.Z` from the tip of
+  `main` (e.g. `git tag v1.2.0 && git push origin v1.2.0`). The `Release Chart` workflow reads the
+  tag, sets `chart/Chart.yaml`'s `version` to match, packages/publishes the chart, and commits the
+  version bump back to `main`.
+- Update `appVersion` in `Chart.yaml` in your PR when updating the RomM version the chart deploys
+  (this is independent from the chart's own `version`/tag).
 
 ### Code Style
 
