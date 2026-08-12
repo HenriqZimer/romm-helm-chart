@@ -1,7 +1,7 @@
 # RomM Helm Chart
 
-[![Version: 1.2.1](https://img.shields.io/badge/Version-1.2.1-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
-[![AppVersion: 4.5.0](https://img.shields.io/badge/AppVersion-4.5.0-informational?style=flat-square)](https://romm.app/)
+[![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
 
@@ -49,7 +49,7 @@ cd romm-helm-chart
 helm package chart/
 
 # Install from local package
-helm install romm ./romm-1.2.1.tgz
+helm install romm ./romm-1.3.0.tgz
 ```
 
 ## Configuration
@@ -279,7 +279,7 @@ RomM integrates with several external services. Get API keys from:
 | Name | Description | Value |
 |------|-------------|-------|
 | `romm.image.repository` | RomM image repository | `docker.io/rommapp/romm` |
-| `romm.image.tag` | RomM image tag | `4.5.0` |
+| `romm.image.tag` | RomM image tag | `5.1.0` |
 | `romm.image.pullPolicy` | Image pull policy | `IfNotPresent` |
 | `romm.service.type` | Service type | `ClusterIP` |
 | `romm.service.port` | Service port | `8080` |

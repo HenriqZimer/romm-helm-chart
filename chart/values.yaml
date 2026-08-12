@@ -93,7 +93,7 @@ romm:
     # -- Container image repository for RomM.
     repository: docker.io/rommapp/romm
     # -- RomM container image tag.
-    tag: "4.5.0"
+    tag: "5.1.0"
     # -- Image pull policy (Always, IfNotPresent, or Never).
     pullPolicy: IfNotPresent
 

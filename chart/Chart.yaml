@@ -2,8 +2,8 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.2.1
-appVersion: "4.5.0"
+version: 1.3.0
+appVersion: "5.1.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
   - romm
@@ -34,9 +34,13 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: fixed
-      description: config.yml ConfigMap rendered a stray literal "|" as the first line of the file, corrupting it (romm.config.data was passed through toYaml on top of an already-literal block string, double-encoding it)
+    - kind: changed
+      description: Bump default RomM version to 5.1.0 (image.tag and appVersion), from the long-stale 4.5.0 default
   artifacthub.io/changesHistory: |
+    - version: 1.2.1
+      changes:
+        - kind: fixed
+          description: config.yml ConfigMap rendered a stray literal "|" as the first line of the file, corrupting it (romm.config.data was passed through toYaml on top of an already-literal block string, double-encoding it)
     - version: 1.1.0
       changes:
         - kind: added
