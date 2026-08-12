@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-12
+
+### Fixed
+- `config.yml` ConfigMap rendered a stray literal `|` as the first line of the file, corrupting it. `romm.config.data` (already a literal multi-line string) was being piped through `toYaml` on top of the existing `config.yml: |` block scalar, double-encoding it. Template now uses `nindent` directly on the string.
+
 ## [1.1.0] - 2026-07-05
 
 ### Added

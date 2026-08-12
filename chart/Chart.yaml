@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.2.0
+version: 1.2.1
 appVersion: "4.5.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -34,23 +34,27 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: added
-      description: Add liveness, readiness and startup probes for the RomM container
-    - kind: added
-      description: Add NOTES.txt with access instructions and warnings for non-persistent storage or default credentials
-    - kind: added
-      description: Add configurable ServiceAccount (serviceAccount.create/name/annotations)
-    - kind: added
-      description: Add checksum/secret and checksum/configmap pod annotations so upgrades roll pods when secrets or config change
-    - kind: changed
-      description: Enable persistence by default for RomM config/library/resources/assets and MariaDB data (previously emptyDir, causing data loss on pod restart)
-    - kind: changed
-      description: Add a safe-by-default container securityContext (allowPrivilegeEscalation false, drop all capabilities)
-    - kind: changed
-      description: Rename default secret placeholder values to make it obvious they must be changed before production use
     - kind: fixed
-      description: CI lint workflow no longer swallows chart-testing failures with continue-on-error
+      description: config.yml ConfigMap rendered a stray literal "|" as the first line of the file, corrupting it (romm.config.data was passed through toYaml on top of an already-literal block string, double-encoding it)
   artifacthub.io/changesHistory: |
+    - version: 1.1.0
+      changes:
+        - kind: added
+          description: Add liveness, readiness and startup probes for the RomM container
+        - kind: added
+          description: Add NOTES.txt with access instructions and warnings for non-persistent storage or default credentials
+        - kind: added
+          description: Add configurable ServiceAccount (serviceAccount.create/name/annotations)
+        - kind: added
+          description: Add checksum/secret and checksum/configmap pod annotations so upgrades roll pods when secrets or config change
+        - kind: changed
+          description: Enable persistence by default for RomM config/library/resources/assets and MariaDB data (previously emptyDir, causing data loss on pod restart)
+        - kind: changed
+          description: Add a safe-by-default container securityContext (allowPrivilegeEscalation false, drop all capabilities)
+        - kind: changed
+          description: Rename default secret placeholder values to make it obvious they must be changed before production use
+        - kind: fixed
+          description: CI lint workflow no longer swallows chart-testing failures with continue-on-error
     - version: 1.0.7
       changes:
         - kind: added
