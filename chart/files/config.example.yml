@@ -1,0 +1,152 @@
+# Fully-annotated example config.yml for RomM.
+#
+# This file is NOT applied automatically - it's a reference to copy from into
+# `romm.config.data` (values.yaml) when `romm.config.enabled: true`. RomM mounts it at
+# /romm/config/config.yml. The whole file is optional: any section/key you omit falls back
+# to RomM's own default. Don't paste the whole thing blindly - only keep the sections you
+# actually want to override, per the guidance in each section below.
+#
+# Full reference: https://docs.romm.app/latest/reference/configuration-file/
+
+# -- What the scanner should ignore. Everything here is additive on top of RomM's built-in
+# defaults (system files, common non-ROM extensions, etc.) - you don't need to repeat those.
+exclude:
+  # -- Skip entire platform folders during scans (by platform slug, see
+  # https://docs.romm.app/latest/platforms/supported-platforms/). Useful if you keep ROMs
+  # for a system you don't actually want indexed (e.g. an old test import).
+  platforms:
+    []
+    # - "ps"   # PlayStation 1
+    # - "gc"   # GameCube
+
+  roms:
+    single_file:
+      # -- Extra file extensions to ignore for single-file ROM platforms, on top of the
+      # built-in defaults (db, ini, tmp, bak, lock, log, cache, crdownload).
+      extensions: []
+      # -- Extra exact file names to ignore, on top of the built-in defaults
+      # (.DS_Store, gamelist.xml, Thumbs.db, etc.).
+      names: []
+    multi_file:
+      # -- Folder names to skip entirely for multi-file ROM platforms (e.g. PS2/PS3 disc
+      # folders, DLC subfolders you don't want treated as separate games).
+      names: []
+      parts:
+        # -- File names to ignore *inside* a multi-file ROM folder (still scans the folder,
+        # just skips these specific files - e.g. a stray readme.txt next to the disc image).
+        names: []
+        # -- Extensions to ignore inside a multi-file ROM folder.
+        extensions: []
+
+# -- Customize how RomM interprets your folder layout and platform identity.
+system:
+  # -- Map a custom folder name to a supported platform slug, when your folder naming
+  # doesn't match RomM's expected slugs (e.g. you use "snes9x" as a folder name instead
+  # of the expected "snes").
+  platforms: {}
+  # snes9x: "snes"
+
+  # -- Associate a platform slug with a specific IGDB "version" for metadata purposes.
+  # Useful for arcade boards/derivative platforms that don't have their own IGDB entry.
+  versions: {}
+  # naomi: "arcade"
+
+# -- Folder locations and hashing behavior, relative to ROMM_BASE_PATH (default /romm).
+filesystem:
+  # -- Override the default "roms" subfolder name under each platform folder.
+  roms_folder: "roms"
+  # -- Override the default "bios" subfolder name for firmware
+  # (https://docs.romm.app/latest/administration/firmware-management/).
+  firmware_folder: "bios"
+  # -- Skip hash calculation (MD5/SHA1/CRC) during scans. Cuts scan time and memory
+  # significantly (~80% less memory per docs.romm.app/troubleshooting/kubernetes/) at the
+  # cost of losing hash-based matching (Hasheous, some RetroAchievements lookups, exact
+  # duplicate detection). Worth enabling on constrained nodes or very large libraries.
+  skip_hash_calculation: false
+
+# -- Metadata/artwork retrieval behavior during scans.
+scan:
+  priority:
+    # -- Provider query order for descriptive metadata (title, description, genres, etc).
+    # First provider that returns a match wins for each field. Valid slugs: igdb, moby, ss
+    # (ScreenScraper), ra (RetroAchievements), launchbox, gamelist, hasheous, flashpoint,
+    # hltb (HowLongToBeat), tgdb (TheGamesDB), libretro.
+    metadata: ["igdb", "moby", "ss", "ra", "launchbox", "gamelist", "hasheous", "flashpoint", "hltb"]
+    # -- Provider order for artwork in general (cover/screenshot fall back to this unless
+    # overridden individually below).
+    artwork: ["igdb", "moby", "ss"]
+    # -- Per-field artwork overrides. Omit to inherit from `artwork` above.
+    cover: []
+    screenshot: []
+    manual: []
+    # -- Preferred region when a provider has multiple regional variants of the same game.
+    region: ["us", "wor", "ss", "eu", "jp"]
+    # -- "prefer_rom_tags" (default): trust region tags already in the ROM filename (e.g.
+    # "(Europe)") over the `region` list above. "prefer_config": always use `region` above,
+    # ignoring filename tags.
+    region_mode: "prefer_rom_tags"
+    # -- Preferred language, same override semantics as `region`.
+    language: ["en", "fr"]
+
+  # -- Which media types to fetch during a scan. Trim this down to save bandwidth/storage if
+  # you don't use e.g. bezels or videos in your frontend.
+  media: ["box2d", "box3d", "screenshot", "manual", "bezel", "video"]
+
+  gamelist:
+    # -- Export an ES-DE/Batocera-compatible gamelist.xml per platform folder after scanning.
+    export: false
+  pegasus:
+    # -- Export Pegasus-frontend-compatible metadata.txt per platform folder after scanning.
+    export: false
+
+# -- In-browser EmulatorJS player tuning (https://docs.romm.app/latest/using/in-browser-play/).
+# Ignored entirely if DISABLE_EMULATOR_JS=true or you're on the `slim` image without cores.
+emulatorjs:
+  # -- Log EmulatorJS internals to the browser console - useful when a specific core won't
+  # boot, noisy otherwise.
+  debug: false
+  # -- Per-ROM browser cache limit in bytes.
+  cache_limit: 268435456 # 256 MiB
+  # -- Skip the DOS emulator's autorun.bat prompt on boot.
+  disable_batch_bootup: false
+  # -- Keep the emulator core running in the background when navigating away, instead of
+  # unloading it (faster to resume, uses more browser memory).
+  disable_auto_unload: false
+  netplay:
+    # -- Enable EmulatorJS netplay (WebRTC peer-to-peer).
+    enabled: false
+    # -- STUN/TURN servers for NAT traversal. Only needed if the default public STUN
+    # servers can't establish a connection between your players (e.g. symmetric NAT).
+    servers: []
+  # -- Per-core settings. Use the special "default" key to apply to all cores, or a core
+  # name (e.g. "snes9x") to target one specifically. Users can still override in-game via
+  # Menu -> Controls; this only sets the starting point.
+  settings: {}
+  # default:
+  #   some-setting: "value"
+  controls: {}
+  # snes9x:
+  #   p1:
+  #     b: "x"
+
+# -- RomM Emulator Streaming (https://docs.romm.app/latest/using/emulator-streaming/) - runs
+# a game inside a real emulator container and streams it to the browser, instead of
+# in-browser EmulatorJS. Requires a broker sidecar in each target container (see this
+# chart's `streaming.enabled`/`streaming.brokerPort` values and the sibling
+# pcsx2/dolphin/xemu/eden-helm-chart repos).
+streaming:
+  # -- Master toggle. Even with containers configured below, nothing streams unless this
+  # is true.
+  enabled: false
+  containers:
+    []
+    # - platform: "ps2"                                    # RomM platform slug (required)
+    #   label: "PCSX2"                                      # Shown in the RomM UI (required)
+    #   host: "https://pcsx2.example.com"                   # Reached by the END USER'S BROWSER
+    #                                                        # directly - needs real DNS/TLS.
+    #   broker_host: "http://pcsx2.gaming.svc.cluster.local:8000" # Reached SERVER-TO-SERVER by
+    #                                                        # RomM's own backend - cluster-
+    #                                                        # internal DNS is fine here, keep
+    #                                                        # it off any public Ingress/LB.
+    #   broker_secret: ""                                   # Must match STREAMING_BROKER_SECRET
+    #                                                        # / the container's BROKER_SECRET.

@@ -239,6 +239,14 @@ romm:
       # -- Use an existing PVC for this mount
       existingClaim: ""
 
+  # -- Database driver (ROMM_DB_DRIVER): "mariadb", "mysql", or "postgresql". Only changes
+  # which SQLAlchemy dialect RomM speaks - it does NOT deploy a different database engine
+  # for you. If you set this to "postgresql"/"mysql", also set mariadb.enabled: false and
+  # mariadb.externalDatabase.host to point at your own instance (this chart only bundles
+  # MariaDB, matching the reference docker-compose - see
+  # https://docs.romm.app/latest/install/databases/).
+  dbDriver: mariadb
+
   # -- Public URL RomM is reached at (https://docs.romm.app/latest/install/reverse-proxy/).
   # Required for correct link/redirect generation, WebSocket origin checks, and
   # emulator-streaming URLs once you're behind an Ingress/reverse proxy. Leave empty for
@@ -260,19 +268,23 @@ romm:
   #       name: romm-database-credentials
 
   # -- RomM Configuration File (config.yml)
-  # This ConfigMap creates a config.yml file that will be mounted at /romm/config/config.yml
-  # Documentation: https://docs.romm.app/latest/Getting-Started/Configuration-File/
+  # This ConfigMap creates a config.yml file mounted at /romm/config/config.yml.
+  # The whole file is optional - RomM falls back to its own defaults for anything you don't
+  # set, so only include the sections you actually want to override. Full reference:
+  # https://docs.romm.app/latest/reference/configuration-file/
   #
-  # To use: enable and paste your complete config.yml in the 'config' field below
+  # To use: set enabled: true and paste a complete config.yml (or a subset of it) below. A
+  # fully-annotated example covering every section (exclude/system/filesystem/scan/
+  # emulatorjs/streaming) ships alongside this chart at files/config.example.yml - copy from
+  # there rather than starting from scratch.
   config:
     enabled: false # Set to true to use custom configuration
     name: romm-config-file
     data:
       ""
-      # When enabled, paste your complete config.yml content here as a multiline string
-      # Example:
+      # When enabled, paste your config.yml content here as a multiline string. Minimal
+      # example (skips platforms you don't own, prefers non-IGDB metadata sources first):
       # data: |
-      #   # Your config.yml content here
       #   exclude:
       #     platforms:
       #       - "ps"      # PlayStation 1
@@ -281,7 +293,12 @@ romm:
       #   scan:
       #     priority:
       #       metadata: ["igdb", "moby", "ss"]
-      #   # See full config at: https://docs.romm.app/latest/Getting-Started/Configuration-File/
+      #       region: ["us", "wor", "eu"]
+      #       language: ["en"]
+      #
+      # See files/config.example.yml in this chart (or the README's "Configuration File"
+      # section) for the full set of keys, including scan.priority provider ordering,
+      # emulatorjs per-core settings/controls, and streaming.containers.
 
 # -- MariaDB database configuration
 mariadb:
@@ -363,6 +380,12 @@ redis:
     host: ""
     # -- Port of the external Redis/Valkey server.
     port: 6379
+    # -- Username, only sent if non-empty (Redis 6+ ACL auth; Valkey's default user needs none).
+    username: ""
+    # -- Logical database number (REDIS_DB), only sent if non-zero.
+    db: 0
+    # -- Set true to connect over rediss:// (TLS). Only sent if true.
+    ssl: false
 
   # -- Container image configuration.
   image:

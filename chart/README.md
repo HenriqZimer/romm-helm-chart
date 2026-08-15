@@ -1,6 +1,6 @@
 # RomM Helm Chart
 
-[![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![Version: 1.5.0](https://img.shields.io/badge/Version-1.5.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
 [![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
@@ -52,7 +52,7 @@ cd romm-helm-chart
 helm package chart/
 
 # Install from local package
-helm install romm ./romm-1.4.0.tgz
+helm install romm ./romm-1.5.0.tgz
 ```
 
 ## Configuration
@@ -351,6 +351,109 @@ calls out several issues that are worth knowing before you deploy:
   `library/bios/<platform>/` (e.g. `library/bios/ps/`) — no separate volume or config is needed,
   see [Firmware Management](https://docs.romm.app/latest/administration/firmware-management/).
 
+## Environment Variables Reference
+
+Full upstream reference: [Environment Variables](https://docs.romm.app/latest/reference/environment-variables/).
+Variables marked **chart** already have first-class `values.yaml` wiring (see the tables
+below); everything else, set via `romm.env` (raw `env` entries) or `romm.envFrom`
+(ConfigMap/Secret refs) — there's no need for this chart to grow a dedicated value for every
+one of RomM's ~90 environment variables.
+
+| Category | Variable | Default | Source |
+|---|---|---|---|
+| Core | `ROMM_BASE_PATH` | `/romm` | `romm.env` |
+| Core | `ROMM_BASE_URL` | `http://0.0.0.0` | **chart** (`romm.baseUrl`) |
+| Core | `ROMM_PORT` | `8080` | fixed (matches `containerPort`, don't override) |
+| Core | `KIOSK_MODE` | `false` | `romm.env` |
+| Database | `ROMM_DB_DRIVER` | `mariadb` | **chart** (`romm.dbDriver`) |
+| Database | `DB_HOST` | — | **chart** (`mariadb.enabled`/`mariadb.externalDatabase.host`) |
+| Database | `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWD` | see `values.yaml` | **chart** (`secrets.data`) |
+| Database | `DB_ROOT_PASSWD` (as `MYSQL_ROOT_PASSWORD`) | — | **chart** (`secrets.data`, bundled MariaDB only) |
+| Database | `DB_QUERY_JSON` | — | `romm.env` |
+| Redis | `REDIS_HOST`, `REDIS_PORT` | — | **chart** (`redis.enabled`/`redis.externalRedis`) |
+| Redis | `REDIS_PASSWORD` | — | **chart** (`secrets.data.REDIS_PASSWORD`) |
+| Redis | `REDIS_USERNAME`, `REDIS_DB`, `REDIS_SSL` | `""` / `0` / `false` | **chart** (`redis.externalRedis.*`, external only) |
+| Auth | `ROMM_AUTH_SECRET_KEY` | — (required) | **chart** (`secrets.data`) |
+| Auth | `OAUTH_ACCESS_TOKEN_EXPIRE_SECONDS`, `OAUTH_REFRESH_TOKEN_EXPIRE_SECONDS`, `SESSION_MAX_AGE_SECONDS`, `INVITE_TOKEN_EXPIRY_SECONDS` | `1800`/`604800`/`1209600`/`600` | `romm.env` |
+| Auth | `DISABLE_DOWNLOAD_ENDPOINT_AUTH`, `DISABLE_CSRF_PROTECTION`, `DISABLE_USERPASS_LOGIN`, `DISABLE_SETUP_WIZARD`, `DISABLE_LOGS_VIEWER` | `false` | `romm.env` |
+| Auth | `ROMM_CORS_ALLOWED_ORIGINS` | — (allows all) | `romm.env` |
+| Auth | `ROMM_SESSION_SECURE_COOKIE` | `false` | `romm.env` (set `true` once behind HTTPS ingress) |
+| OIDC | `OIDC_ENABLED`, `OIDC_AUTOLOGIN`, `OIDC_ALLOW_REGISTRATION`, `OIDC_PROVIDER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`, `OIDC_REDIRECT_URI`, `OIDC_SERVER_APPLICATION_URL`, `OIDC_SERVER_METADATA_URL`, `OIDC_CLAIM_ROLES`, `OIDC_ROLE_{VIEWER,EDITOR,ADMIN}`, `OIDC_TLS_CACERTFILE`, `OIDC_USERNAME_ATTRIBUTE`, `OIDC_RP_INITIATED_LOGOUT`, `OIDC_END_SESSION_ENDPOINT` | see [OIDC Setup](https://docs.romm.app/latest/administration/oidc/) | `romm.env`/`romm.envFrom` (put `OIDC_CLIENT_SECRET` in a Secret) |
+| Metadata | `IGDB_CLIENT_ID`, `IGDB_CLIENT_SECRET`, `STEAMGRIDDB_API_KEY`, `MOBYGAMES_API_KEY` | — | **chart** (`secrets.data`) |
+| Metadata | `SCREENSCRAPER_USER`, `SCREENSCRAPER_PASSWORD`, `RETROACHIEVEMENTS_API_KEY` | — | `romm.env`/`romm.envFrom` (put in `secrets.data` or your own Secret) |
+| Metadata | `REFRESH_RETROACHIEVEMENTS_CACHE_DAYS` | `30` | `romm.env` |
+| Metadata | `PLAYMATCH_API_ENABLED`, `LAUNCHBOX_API_ENABLED`, `HASHEOUS_API_ENABLED`, `FLASHPOINT_API_ENABLED`, `HLTB_API_ENABLED`, `TGDB_API_ENABLED` | `false` | `romm.env` |
+| Scans & Tasks | `SCAN_TIMEOUT`, `SCAN_WORKERS`, `TASK_TIMEOUT`, `TASK_RESULT_TTL`, `SEVEN_ZIP_TIMEOUT` | `14400`/`1`/`300`/`86400`/`60` | `romm.env` |
+| Scans & Tasks | `ENABLE_RESCAN_ON_FILESYSTEM_CHANGE`, `RESCAN_ON_FILESYSTEM_CHANGE_DELAY` | `false`/`5` | `romm.env` — **avoid on NFS/network `library` volumes**, see Kubernetes notes above |
+| Scans & Tasks | `ENABLE_SCHEDULED_RESCAN` + `SCHEDULED_RESCAN_CRON` | `false` / `0 3 * * *` | `romm.env` |
+| Scans & Tasks | `ENABLE_SCHEDULED_UPDATE_SWITCH_TITLEDB` / `..._LAUNCHBOX_METADATA` / `..._CONVERT_IMAGES_TO_WEBP` / `..._RETROACHIEVEMENTS_PROGRESS_SYNC` + matching `..._CRON` | `false` / `0 4 * * *` | `romm.env` |
+| Sync | `ENABLE_SYNC_FOLDER_WATCHER`, `SYNC_FOLDER_SCAN_DELAY`, `ENABLE_SYNC_PUSH_PULL`, `SYNC_PUSH_PULL_CRON`, `SYNC_SSH_KEYS_PATH`, `SYNC_SSH_KNOWN_HOSTS_PATH` | see docs | `romm.env`/`romm.extraVolumes` (SSH keys need their own mount - not provided by this chart) |
+| Emulation | `DISABLE_EMULATOR_JS`, `DISABLE_RUFFLE_RS` | `false` | `romm.env` |
+| Streaming | `STREAMING_BROKER_SECRET`, `STREAMING_SAVE_TIMEOUT` | — / `45` | **chart** (`secrets.data`, consumed by the sibling emulator charts) |
+| Integrations | `YOUTUBE_BASE_URL`, `TINFOIL_WELCOME_MESSAGE` | see docs | `romm.env` |
+| Assets | `MAX_ASSET_UPLOAD_SIZE_BYTES`, `MAX_AUTOCLEANUP_LIMIT` | `536870912`/`100` | `romm.env` |
+| Logging | `LOGLEVEL`, `FORCE_COLOR`, `NO_COLOR` | `INFO`/`false`/`false` | `romm.env` |
+| Web server | `WEB_SERVER_CONCURRENCY`, `WEB_SERVER_TIMEOUT`, `WEB_SERVER_KEEPALIVE`, `WEB_SERVER_MAX_REQUESTS`, `WEB_SERVER_MAX_REQUESTS_JITTER`, `WEB_SERVER_WORKER_CONNECTIONS`, `WEB_SERVER_GUNICORN_WAIT_SECONDS`, `IPV4_ONLY` | see docs | `romm.env` |
+| Proxy | `HTTP_PROXY`, `HTTPS_PROXY`, `NO_PROXY` | — | `romm.env` |
+| Observability | `SENTRY_DSN` | — | `romm.env`/`romm.envFrom` |
+
+Example of setting a handful of these via `romm.env`:
+
+```yaml
+romm:
+  env:
+    - name: ROMM_BASE_PATH
+      value: "/romm"
+    - name: LOGLEVEL
+      value: "DEBUG"
+    - name: ENABLE_SCHEDULED_RESCAN
+      value: "true"
+    - name: SCHEDULED_RESCAN_CRON
+      value: "0 3 * * *"
+    - name: ROMM_SESSION_SECURE_COOKIE
+      value: "true" # only once romm.baseUrl / ingress is HTTPS
+```
+
+## Configuration File (config.yml)
+
+For anything `romm.env` can't express as a flat key/value — scan provider priority/ordering,
+per-platform folder-name mapping, EmulatorJS per-core settings, or the streaming
+`containers` list — use `config.yml` instead. Full reference:
+[Configuration File](https://docs.romm.app/latest/reference/configuration-file/).
+
+Enable it and mount your content at `/romm/config/config.yml`:
+
+```yaml
+romm:
+  config:
+    enabled: true
+    data: |
+      exclude:
+        platforms:
+          - "ps"
+      filesystem:
+        skip_hash_calculation: false
+      scan:
+        priority:
+          metadata: ["igdb", "moby", "ss", "ra"]
+          region: ["us", "wor", "eu"]
+          language: ["en"]
+      streaming:
+        enabled: true
+        containers:
+          - platform: "ps2"
+            label: "PCSX2"
+            host: "https://pcsx2.example.com"
+            broker_host: "http://pcsx2.gaming.svc.cluster.local:8000"
+            broker_secret: "" # matches secrets.data.STREAMING_BROKER_SECRET
+```
+
+A complete example covering every section (`exclude`, `system`, `filesystem`, `scan`,
+`emulatorjs`, `streaming`) with inline comments explaining each key ships with this chart at
+[files/config.example.yml](files/config.example.yml) — copy from there instead of starting
+from scratch. The whole file is optional: any section or key you omit falls back to RomM's
+own default, so only include what you're actually overriding.
+
 ## API Keys Configuration
 
 RomM integrates with several external services. Get API keys from:
@@ -408,12 +511,14 @@ RomM integrates with several external services. Get API keys from:
 |------|-------------|-------|
 | `redis.enabled` | Enable internal Valkey deployment | `true` |
 | `redis.externalRedis.host` / `redis.externalRedis.port` | External Redis/Valkey (when `redis.enabled=false`) | `""` / `6379` |
+| `redis.externalRedis.username` / `.db` / `.ssl` | Optional external Redis/Valkey auth/db/TLS (`REDIS_USERNAME`/`REDIS_DB`/`REDIS_SSL`) | `""` / `0` / `false` |
 | `redis.image.repository` | Valkey image repository | `docker.io/valkey/valkey` |
 | `redis.image.tag` | Valkey image tag | `8-alpine` |
 | `redis.service.port` | Valkey service port | `6379` |
 | `redis.persistence.enabled` | Enable Valkey persistence | `true` |
 | `redis.persistence.size` | Valkey PVC size | `1Gi` |
 | `secrets.data.REDIS_PASSWORD` | Redis/Valkey password (empty = no auth) | `""` |
+| `romm.dbDriver` | Database driver, sets `ROMM_DB_DRIVER` (`mariadb`/`mysql`/`postgresql`) | `mariadb` |
 | `romm.baseUrl` | Public URL RomM is reached at, sets `ROMM_BASE_URL` | `""` |
 
 ### Persistence Parameters

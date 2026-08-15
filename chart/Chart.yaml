@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.4.0
+version: 1.5.0
 appVersion: "5.1.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -35,14 +35,24 @@ annotations:
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
     - kind: added
-      description: Deploy Redis/Valkey (redis.enabled, docker.io/valkey/valkey), previously entirely missing from this chart despite being a hard RomM requirement (session storage, background task queue, metadata caching, socket.io pubsub) not bundled by either RomM image variant - scheduled tasks and the filesystem watcher would silently fail without it
+      description: romm.dbDriver, setting ROMM_DB_DRIVER (mariadb/mysql/postgresql) - was previously never set, silently relying on RomM's own default and giving no chart-level way to switch dialects for an external MySQL/PostgreSQL database
     - kind: added
-      description: REDIS_HOST/REDIS_PORT/REDIS_PASSWORD wiring into the RomM container, dynamic between the bundled Valkey deployment and redis.externalRedis for external instances, mirroring the existing DB_HOST pattern
+      description: redis.externalRedis.username/db/ssl, wiring REDIS_USERNAME/REDIS_DB/REDIS_SSL for external Redis/Valkey instances that need ACL auth, a non-zero logical DB, or TLS
     - kind: added
-      description: romm.baseUrl, setting ROMM_BASE_URL for correct link/redirect generation and WebSocket origin checks behind an Ingress
+      description: files/config.example.yml - a fully-annotated example config.yml covering every documented section (exclude, system, filesystem, scan, emulatorjs, streaming), ships with the chart as a copy-from-here reference for romm.config.data
     - kind: added
-      description: "README: Kubernetes-specific notes section (ingress upload-size/websocket-timeout annotations, fsGroup/PVC permission guidance, filesystem watcher caveats on network-backed library volumes, firmware/BIOS folder placement) sourced from upstream docs.romm.app's Kubernetes and troubleshooting pages, which this chart previously didn't reflect at all"
+      description: "README: full Environment Variables Reference table (every variable from docs.romm.app/reference/environment-variables/, organized by category, noting which already have values.yaml wiring vs which need romm.env/romm.envFrom) and a Configuration File (config.yml) section - neither existed before, despite these being the two most-referenced reference pages in RomM's own docs"
   artifacthub.io/changesHistory: |
+    - version: 1.4.0
+      changes:
+        - kind: added
+          description: Deploy Redis/Valkey (redis.enabled, docker.io/valkey/valkey), previously entirely missing from this chart despite being a hard RomM requirement (session storage, background task queue, metadata caching, socket.io pubsub) not bundled by either RomM image variant - scheduled tasks and the filesystem watcher would silently fail without it
+        - kind: added
+          description: REDIS_HOST/REDIS_PORT/REDIS_PASSWORD wiring into the RomM container, dynamic between the bundled Valkey deployment and redis.externalRedis for external instances, mirroring the existing DB_HOST pattern
+        - kind: added
+          description: romm.baseUrl, setting ROMM_BASE_URL for correct link/redirect generation and WebSocket origin checks behind an Ingress
+        - kind: added
+          description: "README: Kubernetes-specific notes section (ingress upload-size/websocket-timeout annotations, fsGroup/PVC permission guidance, filesystem watcher caveats on network-backed library volumes, firmware/BIOS folder placement) sourced from upstream docs.romm.app's Kubernetes and troubleshooting pages, which this chart previously didn't reflect at all"
     - version: 1.3.0
       changes:
         - kind: changed

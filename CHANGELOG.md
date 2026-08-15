@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-08-15
+
+### Added
+- `romm.dbDriver`, setting `ROMM_DB_DRIVER` (`mariadb`/`mysql`/`postgresql`) — previously never set by the chart at all, silently relying on RomM's own default and giving no way to switch dialects when pointing `mariadb.externalDatabase` at a MySQL or PostgreSQL instance
+- `redis.externalRedis.username`/`.db`/`.ssl`, wiring `REDIS_USERNAME`/`REDIS_DB`/`REDIS_SSL` for external Redis/Valkey instances that need ACL auth, a non-default logical DB, or TLS
+- `chart/files/config.example.yml` — a fully-annotated example `config.yml` covering every documented section (`exclude`, `system`, `filesystem`, `scan`, `emulatorjs`, `streaming`), ships with the chart as a copy-from-here reference for `romm.config.data`
+- README: full "Environment Variables Reference" table covering every variable from [docs.romm.app/reference/environment-variables/](https://docs.romm.app/latest/reference/environment-variables/), organized by category, noting which already have `values.yaml` wiring vs which need `romm.env`/`romm.envFrom`
+- README: "Configuration File (config.yml)" section walking through `romm.config.enabled`/`romm.config.data` with a working example, pointing at the new `files/config.example.yml`
+
 ## [1.4.0] - 2026-08-15
 
 ### Added

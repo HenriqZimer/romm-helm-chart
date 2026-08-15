@@ -78,6 +78,8 @@ spec:
               {{- else }}
               value: {{ printf "%s-db" (include "romm.fullname" .) | quote }}
               {{- end }}
+            - name: ROMM_DB_DRIVER
+              value: {{ .Values.romm.dbDriver | quote }}
             # REDIS_HOST/REDIS_PORT are dynamically generated the same way as DB_HOST above.
             # REDIS_PASSWORD flows through the generic secrets.data loop below.
             - name: REDIS_HOST
@@ -94,6 +96,20 @@ spec:
               {{- else }}
               value: {{ .Values.redis.externalRedis.port | quote }}
               {{- end }}
+            {{- if not .Values.redis.enabled }}
+            {{- if .Values.redis.externalRedis.username }}
+            - name: REDIS_USERNAME
+              value: {{ .Values.redis.externalRedis.username | quote }}
+            {{- end }}
+            {{- if ne (.Values.redis.externalRedis.db | int) 0 }}
+            - name: REDIS_DB
+              value: {{ .Values.redis.externalRedis.db | quote }}
+            {{- end }}
+            {{- if .Values.redis.externalRedis.ssl }}
+            - name: REDIS_SSL
+              value: {{ .Values.redis.externalRedis.ssl | quote }}
+            {{- end }}
+            {{- end }}
             {{- if .Values.romm.baseUrl }}
             - name: ROMM_BASE_URL
               value: {{ .Values.romm.baseUrl | quote }}
