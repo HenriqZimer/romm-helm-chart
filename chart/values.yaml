@@ -77,6 +77,10 @@ secrets:
     # RomM authentication - MUST be changed to a unique random value, e.g.:
     #   openssl rand -hex 32
     ROMM_AUTH_SECRET_KEY: "CHANGEME-generate-your-own-with-openssl-rand-hex-32"
+    # Redis/Valkey password (only used when redis.enabled: true, or forwarded to an
+    # external instance via REDIS_PASSWORD). Empty string = no auth, which is what the
+    # bundled Valkey deployment runs with unless you set this.
+    REDIS_PASSWORD: ""
     # API Keys for metadata providers (get them from respective websites)
     # IGDB (https://api.igdb.com/)
     IGDB_CLIENT_ID: "your_igdb_client_id_here"
@@ -235,6 +239,12 @@ romm:
       # -- Use an existing PVC for this mount
       existingClaim: ""
 
+  # -- Public URL RomM is reached at (https://docs.romm.app/latest/install/reverse-proxy/).
+  # Required for correct link/redirect generation, WebSocket origin checks, and
+  # emulator-streaming URLs once you're behind an Ingress/reverse proxy. Leave empty for
+  # plain port-forward/ClusterIP-only testing. Example: "https://romm.example.com"
+  baseUrl: ""
+
   # -- Additional environment variables for the container.
   # Example:
   env: []
@@ -331,6 +341,67 @@ mariadb:
     hostPath: ""
     accessMode: ReadWriteOnce
     size: 10Gi
+    annotations: {}
+    storageClass: ""
+    existingClaim: ""
+
+# -- Redis/Valkey configuration.
+# REQUIRED by RomM itself (not optional, despite neither image variant bundling it) - used
+# for session storage, the background task queue (RQ), metadata/heartbeat caching, and
+# socket.io pubsub. See https://docs.romm.app/latest/install/redis-or-valkey/. Without it,
+# scheduled tasks and the filesystem watcher fail (see troubleshooting/kubernetes docs).
+redis:
+  # -- Enable internal Valkey deployment.
+  # Set to true to deploy Valkey as part of this chart (internal, no auth by default).
+  # Set to false to use an external Redis/Valkey instance (configure externalRedis below).
+  enabled: true
+
+  # -- External Redis/Valkey configuration.
+  # Only used when redis.enabled is false.
+  externalRedis:
+    # -- Hostname or IP of the external Redis/Valkey server.
+    host: ""
+    # -- Port of the external Redis/Valkey server.
+    port: 6379
+
+  # -- Container image configuration.
+  image:
+    repository: docker.io/valkey/valkey
+    tag: "8-alpine"
+    pullPolicy: IfNotPresent
+
+  # -- Resources requests and limits for the Valkey container.
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  # -- Service configuration.
+  service:
+    type: ClusterIP
+    port: 6379
+
+  # -- Additional environment variables for Valkey (used only when secrets.enabled: false).
+  env: []
+
+  # -- Environment variables from secrets/configmaps for Valkey
+  # (used only when secrets.enabled: false - normally REDIS_PASSWORD comes from secrets.data).
+  envFrom: []
+    # - secretRef:
+    #     name: romm-redis-credentials
+
+  # -- Redis/Valkey persistence. Losing this loses in-flight background tasks on every
+  # restart (see redis-or-valkey docs) - it is NOT the primary database, so this is lower
+  # stakes than mariadb.persistence, but still recommended outside of quick local testing.
+  persistence:
+    enabled: true
+    type: pvc
+    hostPath: ""
+    accessMode: ReadWriteOnce
+    size: 1Gi
     annotations: {}
     storageClass: ""
     existingClaim: ""

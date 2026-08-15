@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-08-15
+
+### Added
+- Deploy Redis/Valkey (`redis.*`, `docker.io/valkey/valkey:8-alpine`) — this was entirely missing from the chart despite RomM requiring it for session storage, the background task queue (RQ), metadata/heartbeat caching, and socket.io pubsub. Neither the `latest` nor `slim` RomM image bundles it, so scheduled tasks and the filesystem watcher would silently stop working without a Redis/Valkey instance the chart never provisioned. Supports both an internal deployment (`redis.enabled: true`, default) and an external instance (`redis.enabled: false` + `redis.externalRedis.host/port`), mirroring the existing `mariadb` pattern (own Deployment/Service/PVC, optional auth via `secrets.data.REDIS_PASSWORD`)
+- `REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD` env wiring into the RomM container, generated dynamically between the internal Service and `externalRedis`, the same way `DB_HOST` already worked
+- `romm.baseUrl`, setting `ROMM_BASE_URL` — required for correct link/redirect generation and WebSocket origin checks once the chart sits behind an Ingress (previously had no way to set this without `romm.env`)
+- README: a "Kubernetes-Specific Notes" section covering ingress upload-size/WebSocket-timeout annotations, `fsGroup`/PVC permission guidance, the filesystem watcher's unreliability on network-backed library volumes (NFS/SMB), OOM risk from hash calculation on large scans, and firmware/BIOS folder placement — all called out in upstream `docs.romm.app`'s Kubernetes and troubleshooting pages, none of which this chart's README previously reflected
+- README: a "Redis / Valkey" configuration section (internal vs external), matching the existing "Database Options" section's structure
+
 ## [1.3.0] - 2026-08-12
 
 ### Changed

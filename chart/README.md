@@ -1,6 +1,6 @@
 # RomM Helm Chart
 
-[![Version: 1.3.0](https://img.shields.io/badge/Version-1.3.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![Version: 1.4.0](https://img.shields.io/badge/Version-1.4.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
 [![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
@@ -20,7 +20,10 @@ helm install romm romm/romm
 
 - Kubernetes 1.19+
 - Helm 3.0+
-- A running MariaDB/MySQL database (or use the included MariaDB chart)
+- A running MariaDB/MySQL/PostgreSQL database (or use the included MariaDB deployment)
+- A running Redis/Valkey instance (or use the included Valkey deployment) - RomM requires
+  this for session storage, the background task queue, metadata caching, and socket.io
+  pubsub; neither the `latest` nor `slim` RomM image bundles it
 - A default `StorageClass` available in the cluster (persistence is enabled by default), or your own `storageClass`/`existingClaim` values
 - Ingress controller (nginx-ingress recommended)
 - cert-manager (optional, for automatic TLS certificates)
@@ -49,7 +52,7 @@ cd romm-helm-chart
 helm package chart/
 
 # Install from local package
-helm install romm ./romm-1.3.0.tgz
+helm install romm ./romm-1.4.0.tgz
 ```
 
 ## Configuration
@@ -186,6 +189,49 @@ secrets:
 - You don't need to configure `MYSQL_ROOT_PASSWORD` when using an external database
 - Ensure network connectivity between your Kubernetes cluster and the external database server
 
+### Redis / Valkey
+
+RomM needs Redis or Valkey for session storage, the background task queue (RQ), metadata
+caching, and socket.io pubsub — see [Redis or Valkey](https://docs.romm.app/latest/install/redis-or-valkey/).
+This is not optional: without it, scheduled tasks (rescans, LaunchBox metadata sync, WebP
+conversion, RetroAchievements sync) and the filesystem watcher silently stop working. Unlike
+the database, neither RomM image variant bundles it, so this chart deploys an unauthenticated
+internal Valkey instance by default (`redis.enabled: true`).
+
+#### Option 1: Internal Valkey (Development/All-in-One)
+
+```yaml
+redis:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: "your-storage-class"
+
+secrets:
+  enabled: true
+  data:
+    # Optional - empty string (the default) means no auth.
+    REDIS_PASSWORD: "your_redis_password"
+    # Other RomM settings...
+```
+
+#### Option 2: External Redis/Valkey (Production)
+
+```yaml
+redis:
+  enabled: false
+  externalRedis:
+    host: "redis.example.com"
+    port: 6379
+
+secrets:
+  enabled: true
+  data:
+    REDIS_PASSWORD: "your_redis_password" # omit/empty if the external instance has no auth
+    # Other RomM settings...
+```
+
 ### Storage Configuration
 
 RomM requires several persistent volumes. **Persistence is enabled by default** (since v1.1.0) for
@@ -254,6 +300,57 @@ romm:
           - romm.yourdomain.com
 ```
 
+### Kubernetes-Specific Notes
+
+RomM has no first-party Helm chart or Kubernetes guidance of its own (see
+[docs.romm.app's Kubernetes page](https://docs.romm.app/latest/install/kubernetes/)) — the
+project's own [Kubernetes troubleshooting doc](https://docs.romm.app/latest/troubleshooting/kubernetes/)
+calls out several issues that are worth knowing before you deploy:
+
+- **Ingress upload size**: ingress controllers typically cap request bodies well below what a
+  ROM/ISO upload needs. This chart doesn't set an annotation for you (it varies by controller):
+  ```yaml
+  romm:
+    ingress:
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: "0" # nginx-ingress
+        # traefik.ingress.kubernetes.io/router.middlewares: <ns>-romm-buffering@kubernetescrd
+  ```
+- **WebSocket timeouts**: long-lived scan progress/streaming sockets can get cut by an
+  ingress controller's default proxy timeouts:
+  ```yaml
+  romm:
+    ingress:
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  ```
+- **PVC permission issues**: if your storage class doesn't respect `fsGroup`, mounted volumes
+  can come up owned by root and RomM (running as a non-root user) can't write to them. Try:
+  ```yaml
+  podSecurityContext:
+    fsGroup: 1000
+  ```
+  or, if your storage class ignores `fsGroup` entirely, chown the volumes with a root
+  `initContainers` entry before RomM starts.
+- **`enableServiceLinks`**: Kubernetes injects every Service in the namespace as an env var by
+  default, which can collide with RomM/nginx's own expected variable names. This chart already
+  sets `enableServiceLinks: false` on the pod spec, so you don't need to do anything here.
+- **Filesystem watcher on network volumes**: if `romm.persistence.library` is backed by NFS,
+  SMB, or another network filesystem (common in Kubernetes), do **not** enable
+  `ENABLE_RESCAN_ON_FILESYSTEM_CHANGE` — inotify-style events are unreliable over the network.
+  Use `ENABLE_SCHEDULED_RESCAN`/`SCHEDULED_RESCAN_CRON` instead (set via `romm.env` or
+  `romm.config.data`). See [Scanning & Watcher](https://docs.romm.app/latest/administration/scanning-and-watcher/).
+- **Large scans OOMKilled**: hash calculation during a big first scan can push memory well past
+  `romm.resources.limits.memory` (`2Gi` by default). Either raise the limit or disable hashing
+  from the Scan page for very large libraries.
+- **`romm.baseUrl`**: set this to your externally-reachable URL (e.g. `https://romm.example.com`)
+  whenever `romm.ingress.enabled: true` — it's used for link/redirect generation and WebSocket
+  origin checks. Leaving it empty is only fine for `kubectl port-forward`-only access.
+- **Firmware/BIOS files**: these live inside the same library volume, under
+  `library/bios/<platform>/` (e.g. `library/bios/ps/`) — no separate volume or config is needed,
+  see [Firmware Management](https://docs.romm.app/latest/administration/firmware-management/).
+
 ## API Keys Configuration
 
 RomM integrates with several external services. Get API keys from:
@@ -305,6 +402,20 @@ RomM integrates with several external services. Get API keys from:
 | `mariadb.persistence.enabled` | Enable MariaDB persistence | `true` |
 | `mariadb.persistence.size` | MariaDB PVC size | `10Gi` |
 
+### Redis/Valkey Parameters
+
+| Name | Description | Value |
+|------|-------------|-------|
+| `redis.enabled` | Enable internal Valkey deployment | `true` |
+| `redis.externalRedis.host` / `redis.externalRedis.port` | External Redis/Valkey (when `redis.enabled=false`) | `""` / `6379` |
+| `redis.image.repository` | Valkey image repository | `docker.io/valkey/valkey` |
+| `redis.image.tag` | Valkey image tag | `8-alpine` |
+| `redis.service.port` | Valkey service port | `6379` |
+| `redis.persistence.enabled` | Enable Valkey persistence | `true` |
+| `redis.persistence.size` | Valkey PVC size | `1Gi` |
+| `secrets.data.REDIS_PASSWORD` | Redis/Valkey password (empty = no auth) | `""` |
+| `romm.baseUrl` | Public URL RomM is reached at, sets `ROMM_BASE_URL` | `""` |
+
 ### Persistence Parameters
 
 | Name | Description | Value |
@@ -326,6 +437,12 @@ RomM integrates with several external services. Get API keys from:
    - Ensure MariaDB is running and accessible
    - Check DB_HOST, DB_PORT, DB_USER, DB_PASSWD values
    - Verify network policies allow communication
+
+1a. **Missing scheduled tasks / stuck scans**
+   - Ensure the Redis/Valkey pod (`redis.enabled: true`) or your external instance is reachable
+   - Check `REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD` resolve correctly (`kubectl exec` into the
+     pod and `redis-cli -h $REDIS_HOST -p $REDIS_PORT ping`)
+   - Confirm no NetworkPolicy blocks the romm pod from reaching the redis Service
 
 2. **Permission Issues**
    - Ensure PVCs have correct permissions (RomM runs as non-root)

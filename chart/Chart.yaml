@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.3.0
+version: 1.4.0
 appVersion: "5.1.0"
 icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
 keywords:
@@ -34,9 +34,19 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: changed
-      description: Bump default RomM version to 5.1.0 (image.tag and appVersion), from the long-stale 4.5.0 default
+    - kind: added
+      description: Deploy Redis/Valkey (redis.enabled, docker.io/valkey/valkey), previously entirely missing from this chart despite being a hard RomM requirement (session storage, background task queue, metadata caching, socket.io pubsub) not bundled by either RomM image variant - scheduled tasks and the filesystem watcher would silently fail without it
+    - kind: added
+      description: REDIS_HOST/REDIS_PORT/REDIS_PASSWORD wiring into the RomM container, dynamic between the bundled Valkey deployment and redis.externalRedis for external instances, mirroring the existing DB_HOST pattern
+    - kind: added
+      description: romm.baseUrl, setting ROMM_BASE_URL for correct link/redirect generation and WebSocket origin checks behind an Ingress
+    - kind: added
+      description: "README: Kubernetes-specific notes section (ingress upload-size/websocket-timeout annotations, fsGroup/PVC permission guidance, filesystem watcher caveats on network-backed library volumes, firmware/BIOS folder placement) sourced from upstream docs.romm.app's Kubernetes and troubleshooting pages, which this chart previously didn't reflect at all"
   artifacthub.io/changesHistory: |
+    - version: 1.3.0
+      changes:
+        - kind: changed
+          description: Bump default RomM version to 5.1.0 (image.tag and appVersion), from the long-stale 4.5.0 default
     - version: 1.2.1
       changes:
         - kind: fixed

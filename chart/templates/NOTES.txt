@@ -34,6 +34,9 @@ RomM has been deployed!
 {{- if and .Values.mariadb.enabled (not .Values.mariadb.persistence.enabled) }}
 {{- $warnings = append $warnings "  - mariadb.persistence is DISABLED: your DATABASE will be LOST on pod restart." }}
 {{- end }}
+{{- if and .Values.redis.enabled (not .Values.redis.persistence.enabled) }}
+{{- $warnings = append $warnings "  - redis.persistence is DISABLED: in-flight background tasks will be LOST on pod restart." }}
+{{- end }}
 {{- if $warnings }}
 
 2. WARNING - Non-persistent storage detected:

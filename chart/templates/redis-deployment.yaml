@@ -1,0 +1,101 @@
+{{- if .Values.redis.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "romm.fullname" . }}-redis
+  labels:
+    {{- include "romm.labels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+spec:
+  replicas: 1
+  {{- if .Values.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  {{- end }}
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "romm.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: redis
+  template:
+    metadata:
+      labels:
+        {{- include "romm.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: redis
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: redis
+          image: "{{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}"
+          imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
+          {{- if .Values.secrets.enabled }}
+          # Empty REDIS_PASSWORD (the default) disables auth - `--requirepass ""` is a no-op.
+          command:
+            - valkey-server
+            - --requirepass
+            - $(REDIS_PASSWORD)
+            - --save
+            - "60 1"
+            - --dir
+            - /data
+          {{- else }}
+          # secrets.enabled=false: no REDIS_PASSWORD sourced here, wire auth yourself via
+          # redis.env/redis.envFrom and your own command override if you need it.
+          command:
+            - valkey-server
+            - --save
+            - "60 1"
+            - --dir
+            - /data
+          {{- end }}
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          {{- if .Values.secrets.enabled }}
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.name }}
+                  key: REDIS_PASSWORD
+            {{- with .Values.redis.env }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
+          {{- else }}
+          {{- with .Values.redis.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          {{- if not .Values.secrets.enabled }}
+          {{- with .Values.redis.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          {{- with .Values.redis.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: data
+          {{- if .Values.redis.persistence.enabled }}
+          {{- if eq .Values.redis.persistence.type "pvc" }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.redis.persistence.existingClaim | default (printf "%s-redis" (include "romm.fullname" .)) }}
+          {{- else if eq .Values.redis.persistence.type "hostPath" }}
+          hostPath:
+            path: {{ .Values.redis.persistence.hostPath }}
+            type: DirectoryOrCreate
+          {{- end }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- end }}
