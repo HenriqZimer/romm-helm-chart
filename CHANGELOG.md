@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-08-15
+
+### Fixed
+- `icon` URL (`https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg`) 404'd on ArtifactHub — romm.app's site moved/removed that asset path. Switched to `.github/resources/isotipo.png` in RomM's own GitHub repo, a stable path served straight from `raw.githubusercontent.com`.
+
 ## [1.5.0] - 2026-08-15
 
 ### Added

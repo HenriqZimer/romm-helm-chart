@@ -2,9 +2,9 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.5.0
+version: 1.5.1
 appVersion: "5.1.0"
-icon: https://romm.app/_ipx/q_80/images/blocks/logos/romm.svg
+icon: https://raw.githubusercontent.com/rommapp/romm/master/.github/resources/isotipo.png
 keywords:
   - romm
   - emulation
@@ -34,15 +34,19 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: added
-      description: romm.dbDriver, setting ROMM_DB_DRIVER (mariadb/mysql/postgresql) - was previously never set, silently relying on RomM's own default and giving no chart-level way to switch dialects for an external MySQL/PostgreSQL database
-    - kind: added
-      description: redis.externalRedis.username/db/ssl, wiring REDIS_USERNAME/REDIS_DB/REDIS_SSL for external Redis/Valkey instances that need ACL auth, a non-zero logical DB, or TLS
-    - kind: added
-      description: files/config.example.yml - a fully-annotated example config.yml covering every documented section (exclude, system, filesystem, scan, emulatorjs, streaming), ships with the chart as a copy-from-here reference for romm.config.data
-    - kind: added
-      description: "README: full Environment Variables Reference table (every variable from docs.romm.app/reference/environment-variables/, organized by category, noting which already have values.yaml wiring vs which need romm.env/romm.envFrom) and a Configuration File (config.yml) section - neither existed before, despite these being the two most-referenced reference pages in RomM's own docs"
+    - kind: fixed
+      description: icon URL 404'd on ArtifactHub (romm.app's page moved/removed that asset path) - switched to the isotipo.png shipped in RomM's own GitHub repo, which is a stable, versioned path
   artifacthub.io/changesHistory: |
+    - version: 1.5.0
+      changes:
+        - kind: added
+          description: romm.dbDriver, setting ROMM_DB_DRIVER (mariadb/mysql/postgresql) - was previously never set, silently relying on RomM's own default and giving no chart-level way to switch dialects for an external MySQL/PostgreSQL database
+        - kind: added
+          description: redis.externalRedis.username/db/ssl, wiring REDIS_USERNAME/REDIS_DB/REDIS_SSL for external Redis/Valkey instances that need ACL auth, a non-zero logical DB, or TLS
+        - kind: added
+          description: files/config.example.yml - a fully-annotated example config.yml covering every documented section (exclude, system, filesystem, scan, emulatorjs, streaming), ships with the chart as a copy-from-here reference for romm.config.data
+        - kind: added
+          description: "README: full Environment Variables Reference table (every variable from docs.romm.app/reference/environment-variables/, organized by category, noting which already have values.yaml wiring vs which need romm.env/romm.envFrom) and a Configuration File (config.yml) section - neither existed before, despite these being the two most-referenced reference pages in RomM's own docs"
     - version: 1.4.0
       changes:
         - kind: added
