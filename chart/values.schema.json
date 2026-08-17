@@ -1,0 +1,779 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "RomM chart values",
+  "type": "object",
+  "properties": {
+    "replicaCount": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1,
+      "default": 1,
+      "description": "Should be left at 1."
+    },
+    "revisionHistoryLimit": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 3
+    },
+    "imagePullSecrets": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": []
+    },
+    "nameOverride": {
+      "type": "string",
+      "default": ""
+    },
+    "fullnameOverride": {
+      "type": "string",
+      "default": ""
+    },
+    "podAnnotations": {
+      "type": "object",
+      "default": {}
+    },
+    "podLabels": {
+      "type": "object",
+      "default": {}
+    },
+    "podSecurityContext": {
+      "type": "object",
+      "default": {}
+    },
+    "securityContext": {
+      "type": "object",
+      "default": {}
+    },
+    "serviceAccount": {
+      "type": "object",
+      "properties": {
+        "create": {
+          "type": "boolean",
+          "default": false
+        },
+        "annotations": {
+          "type": "object"
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        }
+      },
+      "additionalProperties": false
+    },
+    "nodeSelector": {
+      "type": "object",
+      "default": {}
+    },
+    "tolerations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": []
+    },
+    "affinity": {
+      "type": "object",
+      "default": {}
+    },
+    "secrets": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "default": "romm-secrets"
+        },
+        "data": {
+          "type": "object",
+          "description": "Free-form key/value map, base64-encoded into the generated Secret. See README for the recognized keys (DB_*, ROMM_AUTH_SECRET_KEY, REDIS_PASSWORD, metadata provider API keys, etc).",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "romm": {
+      "type": "object",
+      "properties": {
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "default": "docker.io/rommapp/romm"
+            },
+            "tag": {
+              "type": "string",
+              "default": "5.1.0"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ],
+              "default": "IfNotPresent"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "livenessProbe": {
+          "type": "object",
+          "properties": {
+            "tcpSocket": {
+              "type": "object",
+              "properties": {
+                "port": {
+                  "type": [
+                    "string",
+                    "integer"
+                  ]
+                }
+              }
+            },
+            "initialDelaySeconds": {
+              "type": "integer"
+            },
+            "periodSeconds": {
+              "type": "integer"
+            },
+            "timeoutSeconds": {
+              "type": "integer"
+            },
+            "failureThreshold": {
+              "type": "integer"
+            }
+          }
+        },
+        "readinessProbe": {
+          "type": "object",
+          "properties": {
+            "tcpSocket": {
+              "type": "object",
+              "properties": {
+                "port": {
+                  "type": [
+                    "string",
+                    "integer"
+                  ]
+                }
+              }
+            },
+            "initialDelaySeconds": {
+              "type": "integer"
+            },
+            "periodSeconds": {
+              "type": "integer"
+            },
+            "timeoutSeconds": {
+              "type": "integer"
+            },
+            "failureThreshold": {
+              "type": "integer"
+            }
+          }
+        },
+        "startupProbe": {
+          "type": "object"
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "ClusterIP",
+                "NodePort",
+                "LoadBalancer"
+              ],
+              "default": "ClusterIP"
+            },
+            "port": {
+              "type": "integer",
+              "default": 8080
+            },
+            "portName": {
+              "type": "string",
+              "default": "http"
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "labels": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        "ingress": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "className": {
+              "type": "string",
+              "default": ""
+            },
+            "annotations": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "hosts": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "tls": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "default": []
+            }
+          },
+          "additionalProperties": false
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "config": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "pvc",
+                    "hostPath",
+                    "emptyDir"
+                  ]
+                },
+                "hostPath": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "existingClaim": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "library": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "pvc",
+                    "hostPath",
+                    "emptyDir"
+                  ]
+                },
+                "hostPath": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "existingClaim": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "resources": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "pvc",
+                    "hostPath",
+                    "emptyDir"
+                  ]
+                },
+                "hostPath": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "existingClaim": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "assets": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "pvc",
+                    "hostPath",
+                    "emptyDir"
+                  ]
+                },
+                "hostPath": {
+                  "type": "string"
+                },
+                "accessMode": {
+                  "type": "string"
+                },
+                "size": {
+                  "type": "string"
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "storageClass": {
+                  "type": "string"
+                },
+                "existingClaim": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "dbDriver": {
+          "type": "string",
+          "enum": [
+            "mariadb",
+            "mysql",
+            "postgresql"
+          ],
+          "default": "mariadb"
+        },
+        "baseUrl": {
+          "type": "string",
+          "default": ""
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "envFrom": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "config": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "default": false
+            },
+            "name": {
+              "type": "string",
+              "default": "romm-config-file"
+            },
+            "data": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "mariadb": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "externalDatabase": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          "additionalProperties": false
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "default": "docker.io/mariadb"
+            },
+            "tag": {
+              "type": "string",
+              "default": "11"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ],
+              "default": "IfNotPresent"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "ClusterIP",
+                "NodePort",
+                "LoadBalancer"
+              ],
+              "default": "ClusterIP"
+            },
+            "port": {
+              "type": "integer",
+              "default": 3306
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "labels": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": true
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "envFrom": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "pvc",
+                "hostPath",
+                "emptyDir"
+              ]
+            },
+            "hostPath": {
+              "type": "string"
+            },
+            "accessMode": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "storageClass": {
+              "type": "string"
+            },
+            "existingClaim": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "redis": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "externalRedis": {
+          "type": "object",
+          "properties": {
+            "host": {
+              "type": "string",
+              "default": ""
+            },
+            "port": {
+              "type": "integer",
+              "default": 6379
+            },
+            "username": {
+              "type": "string",
+              "default": ""
+            },
+            "db": {
+              "type": "integer",
+              "default": 0
+            },
+            "ssl": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "repository": {
+              "type": "string",
+              "default": "docker.io/valkey/valkey"
+            },
+            "tag": {
+              "type": "string",
+              "default": "8-alpine"
+            },
+            "pullPolicy": {
+              "type": "string",
+              "enum": [
+                "Always",
+                "IfNotPresent",
+                "Never"
+              ],
+              "default": "IfNotPresent"
+            }
+          },
+          "additionalProperties": false
+        },
+        "resources": {
+          "type": "object",
+          "properties": {
+            "requests": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            },
+            "limits": {
+              "type": "object",
+              "properties": {
+                "cpu": {
+                  "type": "string"
+                },
+                "memory": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "ClusterIP",
+                "NodePort",
+                "LoadBalancer"
+              ],
+              "default": "ClusterIP"
+            },
+            "port": {
+              "type": "integer",
+              "default": 6379
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "labels": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": true
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "envFrom": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "default": []
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "pvc",
+                "hostPath",
+                "emptyDir"
+              ]
+            },
+            "hostPath": {
+              "type": "string"
+            },
+            "accessMode": {
+              "type": "string"
+            },
+            "size": {
+              "type": "string"
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "storageClass": {
+              "type": "string"
+            },
+            "existingClaim": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
