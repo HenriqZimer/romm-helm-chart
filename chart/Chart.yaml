@@ -2,7 +2,7 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.5.1
+version: 1.5.2
 appVersion: "5.1.0"
 icon: https://raw.githubusercontent.com/rommapp/romm/master/.github/resources/isotipo.png
 keywords:
@@ -34,9 +34,13 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: fixed
-      description: icon URL 404'd on ArtifactHub (romm.app's page moved/removed that asset path) - switched to the isotipo.png shipped in RomM's own GitHub repo, which is a stable, versioned path
+    - kind: added
+      description: values.schema.json - validates values.yaml against a JSON Schema, and is what powers the "Values schema" feature/badge on ArtifactHub (previously absent)
   artifacthub.io/changesHistory: |
+    - version: 1.5.1
+      changes:
+        - kind: fixed
+          description: icon URL 404'd on ArtifactHub (romm.app's page moved/removed that asset path) - switched to the isotipo.png shipped in RomM's own GitHub repo, which is a stable, versioned path
     - version: 1.5.0
       changes:
         - kind: added
