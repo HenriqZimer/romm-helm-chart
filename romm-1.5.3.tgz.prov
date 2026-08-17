@@ -1,0 +1,173 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+annotations:
+  artifacthub.io/changes: |
+    - kind: added
+      description: Chart releases are now signed (helm package --sign) - see artifacthub.io/signKey for the public key location and fingerprint, powers the "Signed" badge on ArtifactHub
+  artifacthub.io/changesHistory: |
+    - version: 1.5.2
+      changes:
+        - kind: added
+          description: values.schema.json - validates values.yaml against a JSON Schema, and is what powers the "Values schema" feature/badge on ArtifactHub (previously absent)
+    - version: 1.5.1
+      changes:
+        - kind: fixed
+          description: icon URL 404'd on ArtifactHub (romm.app's page moved/removed that asset path) - switched to the isotipo.png shipped in RomM's own GitHub repo, which is a stable, versioned path
+    - version: 1.5.0
+      changes:
+        - kind: added
+          description: romm.dbDriver, setting ROMM_DB_DRIVER (mariadb/mysql/postgresql) - was previously never set, silently relying on RomM's own default and giving no chart-level way to switch dialects for an external MySQL/PostgreSQL database
+        - kind: added
+          description: redis.externalRedis.username/db/ssl, wiring REDIS_USERNAME/REDIS_DB/REDIS_SSL for external Redis/Valkey instances that need ACL auth, a non-zero logical DB, or TLS
+        - kind: added
+          description: files/config.example.yml - a fully-annotated example config.yml covering every documented section (exclude, system, filesystem, scan, emulatorjs, streaming), ships with the chart as a copy-from-here reference for romm.config.data
+        - kind: added
+          description: "README: full Environment Variables Reference table (every variable from docs.romm.app/reference/environment-variables/, organized by category, noting which already have values.yaml wiring vs which need romm.env/romm.envFrom) and a Configuration File (config.yml) section - neither existed before, despite these being the two most-referenced reference pages in RomM's own docs"
+    - version: 1.4.0
+      changes:
+        - kind: added
+          description: Deploy Redis/Valkey (redis.enabled, docker.io/valkey/valkey), previously entirely missing from this chart despite being a hard RomM requirement (session storage, background task queue, metadata caching, socket.io pubsub) not bundled by either RomM image variant - scheduled tasks and the filesystem watcher would silently fail without it
+        - kind: added
+          description: REDIS_HOST/REDIS_PORT/REDIS_PASSWORD wiring into the RomM container, dynamic between the bundled Valkey deployment and redis.externalRedis for external instances, mirroring the existing DB_HOST pattern
+        - kind: added
+          description: romm.baseUrl, setting ROMM_BASE_URL for correct link/redirect generation and WebSocket origin checks behind an Ingress
+        - kind: added
+          description: "README: Kubernetes-specific notes section (ingress upload-size/websocket-timeout annotations, fsGroup/PVC permission guidance, filesystem watcher caveats on network-backed library volumes, firmware/BIOS folder placement) sourced from upstream docs.romm.app's Kubernetes and troubleshooting pages, which this chart previously didn't reflect at all"
+    - version: 1.3.0
+      changes:
+        - kind: changed
+          description: Bump default RomM version to 5.1.0 (image.tag and appVersion), from the long-stale 4.5.0 default
+    - version: 1.2.1
+      changes:
+        - kind: fixed
+          description: config.yml ConfigMap rendered a stray literal "|" as the first line of the file, corrupting it (romm.config.data was passed through toYaml on top of an already-literal block string, double-encoding it)
+    - version: 1.1.0
+      changes:
+        - kind: added
+          description: Add liveness, readiness and startup probes for the RomM container
+        - kind: added
+          description: Add NOTES.txt with access instructions and warnings for non-persistent storage or default credentials
+        - kind: added
+          description: Add configurable ServiceAccount (serviceAccount.create/name/annotations)
+        - kind: added
+          description: Add checksum/secret and checksum/configmap pod annotations so upgrades roll pods when secrets or config change
+        - kind: changed
+          description: Enable persistence by default for RomM config/library/resources/assets and MariaDB data (previously emptyDir, causing data loss on pod restart)
+        - kind: changed
+          description: Add a safe-by-default container securityContext (allowPrivilegeEscalation false, drop all capabilities)
+        - kind: changed
+          description: Rename default secret placeholder values to make it obvious they must be changed before production use
+        - kind: fixed
+          description: CI lint workflow no longer swallows chart-testing failures with continue-on-error
+    - version: 1.0.7
+      changes:
+        - kind: added
+          description: Add support for external MariaDB/MySQL databases
+        - kind: changed
+          description: DB_HOST is now dynamically generated based on mariadb.enabled setting
+        - kind: fixed
+          description: Fix duplicate DB_PORT environment variable error
+        - kind: changed
+          description: Simplify external database configuration (only host needed in externalDatabase)
+    - version: 1.0.5
+      changes:
+        - kind: changed
+          description: Add complete maintainer information with personal website
+        - kind: changed
+          description: Add Helm repository and maintainer links to Artifact Hub
+        - kind: fixed
+          description: Update maintainer email to henrique.zimermann@outlook.com
+    - version: 1.0.3
+      changes:
+        - kind: fixed
+          description: Fixed release workflow to skip existing releases
+        - kind: changed
+          description: Add skip_existing flag to prevent duplicate release errors
+    - version: 1.0.2
+      changes:
+        - kind: changed
+          description: Translate CHANGELOG to English
+        - kind: changed
+          description: Update maintainer email to henriqzimer@outlook.com
+        - kind: changed
+          description: Update chart icon URL to current RomM logo
+        - kind: fixed
+          description: Fix all repository URLs to use correct case (HenriqZimer)
+    - version: 1.0.1
+      changes:
+        - kind: fixed
+          description: Fixed lint workflow (removed --validate flag that requires K8s cluster)
+        - kind: fixed
+          description: Fixed repository name in cr.yaml
+        - kind: changed
+          description: Lint workflow now runs on all pushes to main branch
+        - kind: changed
+          description: Added workflow_dispatch for manual release execution
+    - version: 1.0.0
+      changes:
+        - kind: added
+          description: Initial release of RomM Helm Chart
+        - kind: added
+          description: Support for RomM application version 4.5.0
+        - kind: added
+          description: Full deployment configuration with Deployment, Service, Ingress
+  artifacthub.io/license: MIT
+  artifacthub.io/links: |
+    - name: Helm Repository
+      url: https://henriqzimer.github.io/romm-helm-chart/
+    - name: Chart Source
+      url: https://github.com/HenriqZimer/romm-helm-chart
+    - name: Maintainer Website
+      url: https://henriqzimer.com.br
+    - name: GitHub Profile
+      url: https://github.com/HenriqZimer
+    - name: RomM Application
+      url: https://github.com/rommapp/romm
+    - name: Documentation
+      url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
+  artifacthub.io/signKey: |
+    fingerprint: C2E2E16693F2715BA0B23913BF94E5067859562F
+    url: https://henriqzimer.github.io/romm-helm-chart/HenriqZimer-helm-charts-public.asc
+apiVersion: v2
+appVersion: 5.1.0
+description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
+home: https://romm.app/
+icon: https://raw.githubusercontent.com/rommapp/romm/master/.github/resources/isotipo.png
+keywords:
+- - romm
+- - emulation
+- - retrogaming
+- - rom-manager
+maintainers:
+- - email: henrique.zimermann@outlook.com
+  name: HenriqZimer
+  url: https://henriqzimer.com.br
+name: romm
+sources:
+- - https://github.com/rommapp/romm
+- - https://github.com/HenriqZimer/romm-helm-chart
+type: application
+version: 1.5.3
+
+...
+files:
+  romm-1.5.3.tgz: sha256:30b7b13f6f4db6598b446c35353c53edeff978c8ed8a72871629d5f3e3a8261e
+
+-----BEGIN PGP SIGNATURE-----
+
+wsG5BAEBCgBtBYJqgvFXCRC/lOUGeFlWL0UUAAAAAAAcACBzYWx0QG5vdGF0aW9u
+cy5vcGVucGdwanMub3JnimKtKxo5RFMfnOD64Rta9X0uO2K/dbyF84CrpwuNolgW
+IQTC4uFmk/JxW6CyORO/lOUGeFlWLwAAYTEQAIq5DqWBR7e5DOxw5e4hUXAPLXQL
+moCv8/wG8LQJuPtWlhSCBqI1vESsmmwMWLnoQjWOgFfK/5hZXhY452qT9bcNAGFX
+WLXq87iU0Lzvf5rAVP4VtS0oPAmdCApW/1dytWge9OOKNOxzIdA/x4Idz8I3HLkc
+x1JZjVzqeo0X+wG+EyHdFN7JrWQzedBoDVTXsDMd84Q/PZqRH1mTI7mQyzZOqB68
+CSiYtp/xAAuZBoqSAS562qj1UZMbzyUceFqR/oWOuy1ByOmGlEMsLSl6FJL1aHoQ
+DEbvh8CaJv43p63K7t08yMAti4UthgzswUwzjwHPPQYz5xHraxo+Ob/DD1BnmTRe
++FxlOfss+nxVVsX4zRdBnWHjEMKLfMenisKTouqreR3ZGO4SliEknflQNruYi63m
+m9Re98rgsv7HcXANZfESywV+k1E502uZpFLCc7nItkr4p1WRQENfMpIIDL64R9Xj
+TLgOa0bnKUb4o2fDNXkfV2NxHx68nfklKvmmk/6lTVoyL+K0+3SvqSa7AW6h/jFs
+qB2kJQawakBRN9AHPOf0nCQw4JvYRKCPl6qKQ1lA8AGj5DzcEIUvj9hewDRa3XbB
+ChzjyFXvzAUGngj5syWiwUjrw+1fnejORJ2YeOz7/g7k2pUWnVOa2GjdyHQ7sjuw
+xuYFmcOoW0Sl3Bo5
+-----END PGP SIGNATURE-----
