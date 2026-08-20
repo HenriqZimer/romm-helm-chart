@@ -22,14 +22,14 @@ RomM (Rom Manager) is a beautiful, powerful, self-hosted ROM manager for your re
 ### Add Helm Repository
 
 ```bash
-helm repo add romm https://henriqzimer.github.io/romm-helm-chart/
+helm repo add romm-helm-chart https://henriqzimer.github.io/romm-helm-chart/
 helm repo update
 ```
 
 ### Install Chart
 
 ```bash
-helm install romm romm/romm
+helm install my-romm romm-helm-chart/romm --version 1.5.4
 ```
 
 For detailed installation instructions and configuration options, see the [chart README](chart/README.md).
