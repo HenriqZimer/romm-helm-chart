@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.5] - 2026-08-20
+
+### Changed
+- Bump default RomM version to `5.2.0` (`romm.image.tag` and `appVersion`), from `5.1.0`.
+
 ## [1.5.4] - 2026-08-17
 
 ### Fixed

@@ -1,7 +1,7 @@
 # RomM Helm Chart
 
-[![Version: 1.5.4](https://img.shields.io/badge/Version-1.5.4-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
-[![AppVersion: 5.1.0](https://img.shields.io/badge/AppVersion-5.1.0-informational?style=flat-square)](https://romm.app/)
+[![Version: 1.5.5](https://img.shields.io/badge/Version-1.5.5-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![AppVersion: 5.2.0](https://img.shields.io/badge/AppVersion-5.2.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
 
@@ -13,7 +13,7 @@ helm repo add romm-helm-chart https://henriqzimer.github.io/romm-helm-chart/
 helm repo update
 
 # Install RomM
-helm install my-romm romm-helm-chart/romm --version 1.5.4
+helm install my-romm romm-helm-chart/romm --version 1.5.5
 ```
 
 ## Prerequisites
@@ -38,7 +38,7 @@ helm repo add romm-helm-chart https://henriqzimer.github.io/romm-helm-chart/
 helm repo update
 
 # Install RomM
-helm install my-romm romm-helm-chart/romm --version 1.5.4
+helm install my-romm romm-helm-chart/romm --version 1.5.5
 ```
 
 ### From Source
@@ -52,7 +52,7 @@ cd romm-helm-chart
 helm package chart/
 
 # Install from local package
-helm install my-romm ./romm-1.5.4.tgz
+helm install my-romm ./romm-1.5.5.tgz
 ```
 
 ## Configuration

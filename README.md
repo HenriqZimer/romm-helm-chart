@@ -29,7 +29,7 @@ helm repo update
 ### Install Chart
 
 ```bash
-helm install my-romm romm-helm-chart/romm --version 1.5.4
+helm install my-romm romm-helm-chart/romm --version 1.5.5
 ```
 
 For detailed installation instructions and configuration options, see the [chart README](chart/README.md).

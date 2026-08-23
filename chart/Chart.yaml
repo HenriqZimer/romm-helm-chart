@@ -2,8 +2,8 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.5.4
-appVersion: "5.1.0"
+version: 1.5.5
+appVersion: "5.2.0"
 icon: https://raw.githubusercontent.com/rommapp/romm/master/.github/resources/isotipo.png
 keywords:
   - romm
@@ -37,9 +37,13 @@ annotations:
     - name: Documentation
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
-    - kind: fixed
-      description: README install commands now use a unique repo alias (<name>-helm-chart) instead of the bare chart name, and pin --version explicitly, matching what actually works
+    - kind: changed
+      description: Bump default RomM version to 5.2.0 (image.tag and appVersion), from 5.1.0
   artifacthub.io/changesHistory: |
+    - version: 1.5.4
+      changes:
+        - kind: fixed
+          description: README install commands now use a unique repo alias (<name>-helm-chart) instead of the bare chart name, and pin --version explicitly, matching what actually works
     - version: 1.5.3
       changes:
         - kind: added
