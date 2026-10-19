@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-10-19
+
+### Added
+- `files/config.example.yml`: ready-to-use `streaming.containers` example for the `webstation` protocol (one container serving every emulator, see [webstation-helm-chart](https://github.com/HenriqZimer/webstation-helm-chart)); the per-emulator broker mod form is marked legacy.
+- `secrets.data`: documented (commented) `STREAMING_BROKER_SECRET`, which must equal the webstation container's `BROKER_SECRET`.
+
 ## [1.6.0] - 2026-10-19
 
 ### Changed

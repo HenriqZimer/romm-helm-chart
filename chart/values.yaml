@@ -81,6 +81,12 @@ secrets:
     # external instance via REDIS_PASSWORD). Empty string = no auth, which is what the
     # bundled Valkey deployment runs with unless you set this.
     REDIS_PASSWORD: ""
+    # Emulator streaming (webstation protocol): shared secret RomM sends to the broker, must
+    # equal the BROKER_SECRET of the webstation container (webstation-helm-chart). Leave
+    # commented if you set `broker_secret` per container in config.yml instead - the env var
+    # wins whenever it is set, so the two can't be mixed. Prefer an external Secret
+    # (romm.envFrom) over putting it here.
+    # STREAMING_BROKER_SECRET: "CHANGEME-same-as-webstation-BROKER_SECRET"
     # API Keys for metadata providers (get them from respective websites)
     # IGDB (https://api.igdb.com/)
     IGDB_CLIENT_ID: "your_igdb_client_id_here"

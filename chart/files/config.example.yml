@@ -159,8 +159,21 @@ streaming:
   # differs. https://docs.romm.app/latest/using/emulator-streaming/
   containers:
     []
-    # - protocol: webstation                    # omit only for the deprecated per-emulator broker mods
-    #   host: "https://emulators.example.com"   # Reached by the END USER'S BROWSER (Selkies web UI,
+    # --- Recommended: ONE webstation container for every emulator ---------------------------
+    # Deploy it with https://github.com/HenriqZimer/webstation-helm-chart (romm-webstation image).
+    # - protocol: webstation
+    #   host: "https://romm.example.com/streaming"   # or just "/streaming" on RomM's own origin
+    #   subfolder: "/streaming"                       # == webstation env.SUBFOLDER (no trailing slash here)
+    #   broker_host: "http://webstation.gaming.svc.cluster.local:3000"  # server-to-server, plain HTTP ok
+    #   label: "Emulation station"
+    #   platforms:
+    #     ps2: { emulator: pcsx2, memory_card_sync: true }
+    #     ngc: { emulator: dolphin, memory_card_sync: true }
+    #     snes: retroarch
+    #
+    # --- Legacy: per-emulator broker mods (deprecated upstream) -----------------------------
+    # - host: "https://emulators.example.com"   # (no `protocol` key = deprecated per-emulator mod)
+    #                                           # Reached by the END USER'S BROWSER (Selkies web UI,
     #                                           # HTTPS) - or a path if reverse proxied on RomM's origin.
     #   subfolder: "/streaming"                 # Matches the container's SUBFOLDER env
     #   broker_host: "http://emu.gaming.svc.cluster.local:8000" # SERVER-TO-SERVER (RomM backend);

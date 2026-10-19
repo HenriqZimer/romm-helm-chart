@@ -1,6 +1,6 @@
 # RomM Helm Chart
 
-[![Version: 1.6.0](https://img.shields.io/badge/Version-1.6.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![Version: 1.6.1](https://img.shields.io/badge/Version-1.6.1-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
 [![AppVersion: 5.4.0](https://img.shields.io/badge/AppVersion-5.4.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
@@ -389,7 +389,7 @@ one of RomM's ~90 environment variables.
 | Scans & Tasks | `ENABLE_SCHEDULED_UPDATE_SWITCH_TITLEDB` / `..._LAUNCHBOX_METADATA` / `..._CONVERT_IMAGES_TO_WEBP` / `..._RETROACHIEVEMENTS_PROGRESS_SYNC` + matching `..._CRON` | `false` / `0 4 * * *` | `romm.env` |
 | Sync | `ENABLE_SYNC_FOLDER_WATCHER`, `SYNC_FOLDER_SCAN_DELAY`, `ENABLE_SYNC_PUSH_PULL`, `SYNC_PUSH_PULL_CRON`, `SYNC_SSH_KEYS_PATH`, `SYNC_SSH_KNOWN_HOSTS_PATH` | see docs | `romm.env`/`romm.extraVolumes` (SSH keys need their own mount - not provided by this chart) |
 | Emulation | `DISABLE_EMULATOR_JS`, `DISABLE_RUFFLE_RS` | `false` | `romm.env` |
-| Streaming | `STREAMING_BROKER_SECRET`, `STREAMING_SAVE_TIMEOUT` | — / `45` | **chart** (`secrets.data`, consumed by the sibling emulator charts) |
+| Streaming | `STREAMING_BROKER_SECRET`, `STREAMING_SAVE_TIMEOUT` | — / `45` | **chart** (`secrets.data`, commented by default; must equal `BROKER_SECRET` of [webstation-helm-chart](https://github.com/HenriqZimer/webstation-helm-chart)) |
 | Integrations | `YOUTUBE_BASE_URL`, `TINFOIL_WELCOME_MESSAGE` | see docs | `romm.env` |
 | Assets | `MAX_ASSET_UPLOAD_SIZE_BYTES`, `MAX_AUTOCLEANUP_LIMIT` | `536870912`/`100` | `romm.env` |
 | Logging | `LOGLEVEL`, `FORCE_COLOR`, `NO_COLOR` | `INFO`/`false`/`false` | `romm.env` |
