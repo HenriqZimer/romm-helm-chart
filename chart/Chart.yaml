@@ -2,8 +2,8 @@ apiVersion: v2
 name: romm
 description: A Helm chart for RomM - Beautiful, powerful, self-hosted ROM manager
 type: application
-version: 1.5.5
-appVersion: "5.2.0"
+version: 1.6.0
+appVersion: "5.4.0"
 icon: https://raw.githubusercontent.com/rommapp/romm/master/.github/resources/isotipo.png
 keywords:
   - romm
@@ -38,8 +38,16 @@ annotations:
       url: https://github.com/HenriqZimer/romm-helm-chart/blob/main/chart/README.md
   artifacthub.io/changes: |
     - kind: changed
-      description: Bump default RomM version to 5.2.0 (image.tag and appVersion), from 5.1.0
+      description: "Bump default RomM version to 5.4.0 (image.tag and appVersion), from 5.2.0. BREAKING upstream (5.3): the library layout must be declared in config.yml (filesystem.structure) or RomM refuses to start; roms_folder/firmware_folder were removed. 5.4 also denies cross-origin requests by default (ROMM_CORS_ALLOWED_ORIGINS) and trusts X-Forwarded-For only from private ranges (FORWARDED_ALLOW_IPS). First start after upgrading runs long DB migrations - allow 15-20 minutes."
+    - kind: changed
+      description: "romm.config.enabled now defaults to true, shipping filesystem.structure (roms/{platform}/{game}, bios/{platform}) so RomM starts out of the box on 5.3+. Set a different structure in romm.config.data if your library uses another layout."
+    - kind: changed
+      description: "files/config.example.yml updated for 5.3/5.4: filesystem.structure, skip_title_id_extraction, embed_switch_title_ids, and the per-container streaming.containers schema."
   artifacthub.io/changesHistory: |
+    - version: 1.5.5
+      changes: |
+        - kind: changed
+          description: Bump default RomM version to 5.2.0 (image.tag and appVersion), from 5.1.0
     - version: 1.5.4
       changes:
         - kind: fixed

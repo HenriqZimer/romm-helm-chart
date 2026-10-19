@@ -1,7 +1,7 @@
 # RomM Helm Chart
 
-[![Version: 1.5.5](https://img.shields.io/badge/Version-1.5.5-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
-[![AppVersion: 5.2.0](https://img.shields.io/badge/AppVersion-5.2.0-informational?style=flat-square)](https://romm.app/)
+[![Version: 1.6.0](https://img.shields.io/badge/Version-1.6.0-informational?style=flat-square)](https://github.com/HenriqZimer/romm-helm-chart)
+[![AppVersion: 5.4.0](https://img.shields.io/badge/AppVersion-5.4.0-informational?style=flat-square)](https://romm.app/)
 
 A Helm chart for [RomM](https://romm.app/) - Beautiful, powerful, self-hosted ROM manager.
 
@@ -421,31 +421,40 @@ per-platform folder-name mapping, EmulatorJS per-core settings, or the streaming
 `containers` list — use `config.yml` instead. Full reference:
 [Configuration File](https://docs.romm.app/latest/reference/configuration-file/).
 
-Enable it and mount your content at `/romm/config/config.yml`:
+**Since RomM 5.3 the library layout must be declared in `filesystem.structure`, otherwise RomM
+refuses to start** (`filesystem.roms_folder`/`firmware_folder` were removed). This chart therefore
+enables `romm.config` by default with RomM's standard layout. Adjust it (and add anything else) via
+`romm.config.data`:
 
 ```yaml
 romm:
   config:
     enabled: true
     data: |
+      filesystem:
+        structure:
+          default: "roms/{platform}/{game}"   # structure B: "{platform}/roms/{game}"
+          firmware: "bios/{platform}"         # structure B: "{platform}/bios"
+        skip_hash_calculation: false
       exclude:
         platforms:
           - "ps"
-      filesystem:
-        skip_hash_calculation: false
       scan:
         priority:
           metadata: ["igdb", "moby", "ss", "ra"]
           region: ["us", "wor", "eu"]
           language: ["en"]
-      streaming:
+      streaming:                              # one entry per container (RomM >= 5.3)
         enabled: true
         containers:
-          - platform: "ps2"
-            label: "PCSX2"
-            host: "https://pcsx2.example.com"
-            broker_host: "http://pcsx2.gaming.svc.cluster.local:8000"
-            broker_secret: "" # matches secrets.data.STREAMING_BROKER_SECRET
+          - protocol: webstation
+            host: "https://emulators.example.com"
+            broker_host: "http://emu.gaming.svc.cluster.local:8000"
+            broker_secret: ""                 # or env STREAMING_BROKER_SECRET
+            platforms:
+              ps2:
+                emulator: pcsx2
+                label: PCSX2
 ```
 
 A complete example covering every section (`exclude`, `system`, `filesystem`, `scan`,

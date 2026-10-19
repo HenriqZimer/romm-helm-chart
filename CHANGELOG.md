@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-19
+
+### Changed
+- Bump default RomM version to `5.4.0` (`romm.image.tag` and `appVersion`), from `5.2.0`.
+- `romm.config.enabled` now defaults to `true` and ships `filesystem.structure` (`roms/{platform}/{game}`, `bios/{platform}`). **Required since RomM 5.3**: the instance refuses to start unless the library layout is declared. If your library uses "structure B" (`{platform}/roms/{game}`) change the templates in `romm.config.data`. If you already set `romm.config.data` with `filesystem.roms_folder`/`firmware_folder`, replace them with `filesystem.structure` (RomM refuses to start while they are set).
+- `files/config.example.yml` updated for 5.3/5.4 (`filesystem.structure`, `skip_title_id_extraction`, `embed_switch_title_ids`, per-container `streaming.containers`).
+
+### Upgrade notes
+- 5.4 denies cross-origin requests by default - set `ROMM_CORS_ALLOWED_ORIGINS` if a browser client on another origin talks to RomM.
+- 5.4 trusts `X-Forwarded-For` only from loopback/private ranges - add a public-address reverse proxy to `FORWARDED_ALLOW_IPS`.
+- The first start after upgrading runs long database migrations (15-20 minutes on large libraries); do not restart the pod meanwhile.
+
 ## [1.5.5] - 2026-08-20
 
 ### Changed

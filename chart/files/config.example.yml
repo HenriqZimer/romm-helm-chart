@@ -51,18 +51,34 @@ system:
   versions: {}
   # naomi: "arcade"
 
-# -- Folder locations and hashing behavior, relative to ROMM_BASE_PATH (default /romm).
+# -- Folder locations and hashing behavior, relative to the library root (/romm/library).
 filesystem:
-  # -- Override the default "roms" subfolder name under each platform folder.
-  roms_folder: "roms"
-  # -- Override the default "bios" subfolder name for firmware
-  # (https://docs.romm.app/latest/administration/firmware-management/).
-  firmware_folder: "bios"
+  # -- REQUIRED since RomM 5.3: the library layout must be declared explicitly, otherwise
+  # RomM refuses to start. `roms_folder` and `firmware_folder` were removed (RomM also
+  # refuses to start while either is set). A template is a "/"-separated path where
+  # {platform} marks the platform folder and {game} the level a game begins at.
+  # https://docs.romm.app/latest/reference/configuration-file/#filesystemstructure
+  structure:
+    # -- Library-wide ROM layout. "roms/{platform}/{game}" is "structure A" (RomM's
+    # historical default); "structure B" is "{platform}/roms/{game}".
+    default: "roms/{platform}/{game}"
+    # -- Firmware layout, only literal folder names around {platform}. Structure B:
+    # "{platform}/bios".
+    firmware: "bios/{platform}"
+    # -- Any other key is a platform folder name overriding the ROM layout for that
+    # platform (one template, or a list whose discovery is unioned).
+    # snes: "roms/{platform}/{region}/{game}"
   # -- Skip hash calculation (MD5/SHA1/CRC) during scans. Cuts scan time and memory
   # significantly (~80% less memory per docs.romm.app/troubleshooting/kubernetes/) at the
   # cost of losing hash-based matching (Hasheous, some RetroAchievements lookups, exact
   # duplicate detection). Worth enabling on constrained nodes or very large libraries.
   skip_hash_calculation: false
+  # -- Skip reading the platform-native Title ID from ROM binaries (worse matching on
+  # non-hashed platforms when enabled).
+  skip_title_id_extraction: false
+  # -- Rename Switch ROMs on disk so the filename ends in [TITLEID][vVERSION]. Off by
+  # default because it rewrites file names.
+  embed_switch_title_ids: false
 
 # -- Metadata/artwork retrieval behavior during scans.
 scan:
@@ -138,15 +154,24 @@ streaming:
   # -- Master toggle. Even with containers configured below, nothing streams unless this
   # is true.
   enabled: false
+  # -- One entry per CONTAINER (RomM >= 5.3), not per emulator. The container's own keys
+  # are the defaults for every platform it serves; a platform block only overrides what
+  # differs. https://docs.romm.app/latest/using/emulator-streaming/
   containers:
     []
-    # - platform: "ps2"                                    # RomM platform slug (required)
-    #   label: "PCSX2"                                      # Shown in the RomM UI (required)
-    #   host: "https://pcsx2.example.com"                   # Reached by the END USER'S BROWSER
-    #                                                        # directly - needs real DNS/TLS.
-    #   broker_host: "http://pcsx2.gaming.svc.cluster.local:8000" # Reached SERVER-TO-SERVER by
-    #                                                        # RomM's own backend - cluster-
-    #                                                        # internal DNS is fine here, keep
-    #                                                        # it off any public Ingress/LB.
-    #   broker_secret: ""                                   # Must match STREAMING_BROKER_SECRET
-    #                                                        # / the container's BROKER_SECRET.
+    # - protocol: webstation                    # omit only for the deprecated per-emulator broker mods
+    #   host: "https://emulators.example.com"   # Reached by the END USER'S BROWSER (Selkies web UI,
+    #                                           # HTTPS) - or a path if reverse proxied on RomM's origin.
+    #   subfolder: "/streaming"                 # Matches the container's SUBFOLDER env
+    #   broker_host: "http://emu.gaming.svc.cluster.local:8000" # SERVER-TO-SERVER (RomM backend);
+    #                                           # derived from host when omitted, required if host is a path.
+    #   broker_secret: ""                       # Used only when STREAMING_BROKER_SECRET env is unset
+    #   library_path: "/romm/library"           # Where the container mounts the RomM library
+    #   label: "Emulation station"
+    #   platforms:                              # platform slug -> emulator, or an override block
+    #     snes: retroarch
+    #     gba: "retroarch:gpsp"                 # RetroArch with a specific core
+    #     ps2:
+    #       emulator: pcsx2
+    #       label: PCSX2
+    #       memory_card_sync: true
