@@ -3,6 +3,10 @@
   "title": "RomM chart values",
   "type": "object",
   "properties": {
+    "global": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "replicaCount": {
       "type": "integer",
       "minimum": 1,
